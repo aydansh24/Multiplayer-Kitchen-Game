@@ -15,3 +15,4 @@ class Burger(pygame.sprite.Sprite):
 
     def get_pic(self):
         return self.image
+
