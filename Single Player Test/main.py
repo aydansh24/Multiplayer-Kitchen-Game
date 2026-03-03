@@ -80,6 +80,9 @@ clock = pygame.time.Clock()
 kitchen_floor = pygame.image.load("kitchen floor.png").convert_alpha()
 kitchen_floor = pygame.transform.scale(kitchen_floor, (kitchen_floor.get_width() * 3, kitchen_floor.get_height() * 3))
 
+kitchen = pygame.image.load("kitchen.png").convert() 
+kitchen = pygame.transform.scale(kitchen, (kitchen.get_width() * 3, kitchen.get_height() * 3))
+
 player = pygame.sprite.GroupSingle()
 player.add(Player())
 
@@ -90,6 +93,7 @@ while True:
             exit()
 
     screen.blit(kitchen_floor, (0, 0))
+    screen.blit(kitchen, (192, 48))
 
     foods.draw(screen)
     foods.update()
