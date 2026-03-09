@@ -7,14 +7,12 @@ How to Run:
 3. Open Command Prompt
 4. Type "cd" then paste the folder address. Press "Enter"
 
-Host: 
-5. Type "python server.py"
-6. The command prompt should print out "Waiting for connection... Server Started"
-7. To play, repeat steps 3 and 4, then follow the instructiosn below
+Host:\
+5. Type "python server.py"\
+6. The command prompt should print out "Waiting for connection... Server Started"\
+7. To play, repeat steps 3 and 4, then follow the instructiosn below\
 
-Player:
-8. Ensure that someone is already running the server file
-9. Type "python client.py"
-10. A window should pop up, and you can begin playing!
-11. 
-12. 
+Player:\
+8. Ensure that someone is already running the server file\
+9. Type "python client.py"\
+10. A window should pop up, and you can begin playing!\
