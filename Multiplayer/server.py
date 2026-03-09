@@ -3,7 +3,7 @@ import socket
 from _thread import *
 from player import Player
 
-server = "192.168.1.96"
+server = "10.67.38.202"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -59,3 +59,4 @@ while True:
         currentPlayer += 1
     else:
         conn.close()
+
