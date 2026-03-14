@@ -10,9 +10,9 @@ How to Run:
 Host:\
 5. Type "python server.py" Then press "Enter"\
 6. The command prompt should print out "Waiting for connection... Server Started"\
-7. To play, repeat steps 3 and 4, then follow the instructiosn below\
+7. To play, repeat steps 3 and 4, then follow the instructiosn below
 
 Player:\
 8. Ensure that someone is already running the server file\
 9. Type "python client.py" Press "Enter"\
-10. A window should pop up, and you can begin playing!\
+10. A window should pop up, and you can begin playing!
