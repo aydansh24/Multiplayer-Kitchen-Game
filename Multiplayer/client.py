@@ -1,6 +1,8 @@
 import pygame
 from network import Network
 from player import Player
+from station import Station
+from ingredient import Ingredient
 import random as r
 
 pygame.init()
@@ -17,6 +19,9 @@ player_img = pygame.transform.scale(player_img, (player_img.get_width() * 6, pla
 kitchen_img = pygame.image.load("kitchen.png").convert()
 kitchen_img = pygame.transform.scale(kitchen_img, (width, height))
 
+tomato_img = pygame.image.load("tomato.png").convert_alpha()
+tomato_img = pygame.transform.scale(tomato_img,(tomato_img.get_width() * 6, tomato_img.get_height() * 6))
+
 collision_rects = [
     pygame.Rect(0, 0, width, 1),           # top wall
     pygame.Rect(0, height-50, width, 1),   # bottom wall
@@ -26,8 +31,14 @@ collision_rects = [
     # pygame.Rect(left, top, width, height)
 ]
 
-def redrawWindow(win, players):
+def redrawWindow(win, players, stations):
     win.blit(kitchen_img, (0, 0))
+
+    for s in stations:
+        pygame.draw.rect(win, (150, 75, 0), s.rect)
+
+        if s.item:
+            s.item.draw(win,tomato_img)
 
     for player in players:
         player.draw(win, player_img)
@@ -55,15 +66,22 @@ def main():
         if players:
             p = players[player_id]
             p.move(collision_rects)
-            players = n.send(p)
-        else:
-            rand_x = r.randint(10, width - 20)
-            rand_y = r.randint(10, height - 20)
-            players = n.send(Player(rand_x, rand_y, 50, 50, (255, 0, 0)))
+            keys = pygame.key.get_pressed()
 
-        redrawWindow(win, players)
+            if keys[pygame.K_c]:
+                for s in stations:
+                    if p.get_rect().colliderect(s.rect):
+                        s.interact(p)
+
+            players, stations = n.send(p)
+        else:
+            rand_x = r.randint(32, width - 32)
+            rand_y = r.randint(32, height - 32)
+            players, stations = n.send(Player(rand_x, rand_y, 50, 50, (255, 0, 0)))
+
+        redrawWindow(win, players, stations)
 
         for rect in collision_rects:
-            pygame.draw.rect(win, (0, 255, 0), rect)
+            pygame.draw.rect(win, (0, 0, 0), rect)
 
 main()
