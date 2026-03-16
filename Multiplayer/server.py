@@ -2,11 +2,12 @@ import pickle
 import socket
 from _thread import *
 from player import Player
+from station import Station
 
 server = "0.0.0.0"
 port = 5555
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket. socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
     s.bind((server, port))
@@ -24,6 +25,12 @@ players = [
     Player(200, 200, 50, 50, (255, 255, 0))
 ]
 
+stations = [
+    Station(100,100,64,64,"tomato_crate"),
+    Station(180,100,64,64,"lettuce_crate"),
+    Station(260,100,64,64,"counter")
+]
+
 
 def threaded_client(conn, player):
     conn.send(pickle.dumps(player))
@@ -37,7 +44,7 @@ def threaded_client(conn, player):
                 break
             else:
                 players[player] = data
-                reply = players
+                reply = (players, stations)
 
             conn.sendall(pickle.dumps(reply))
 
@@ -59,5 +66,3 @@ while True:
         currentPlayer += 1
     else:
         conn.close()
-
-
