@@ -11,11 +11,9 @@ class Player:
         self.vel = 6
         self.inventory = None
 
-    def get_rect(self):
-        return pygame.Rect(self.x, self.y, self.width, self.height)
-
     def draw(self, win, player_img, imgs):
         win.blit(player_img, (self.x, self.y))
+        print(f"Rect: {self.x}, {self.y}, {self.width}, {self.height}")
 
         if self.inventory:
             img = imgs.get(self.inventory.name)
@@ -54,7 +52,7 @@ class Player:
                 elif dy < 0:
                     self.y = rect.bottom
 
-        if dx > 0:   self.hand = "right"
+        if   dx > 0: self.hand = "right"
         elif dx < 0: self.hand = "left"
         elif dy > 0: self.hand = "down"
         elif dy < 0: self.hand = "up"
@@ -70,3 +68,6 @@ class Player:
             return pygame.Rect(self.x - offset - size, self.y + self.height // 2 - size // 2, size, size)
         elif self.hand == "right":
             return pygame.Rect(self.x + self.width + offset, self.y + self.height // 2 - size // 2, size, size)
+        else:
+            print("Congratulations! You broke the game.")
+            return None
