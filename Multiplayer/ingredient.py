@@ -4,8 +4,8 @@ class Ingredient:
     def __init__(self, x, y, name):
         self.x = x
         self.y = y
-        self.width = 32
-        self.height = 32
+        self.width = 24
+        self.height = 24
         self.name = name
         # self.state = "raw"
         self.held = False

@@ -50,8 +50,9 @@ def threaded_client(conn, player):
             players[player] = player_obj
 
             if action == "interact":
+                hand_rect = player_obj.get_hand_rect()
                 for s in stations:
-                    if player_obj.get_rect().colliderect(s.rect):
+                    if hand_rect.colliderect(s.rect):
                         s.interact(player_obj)
 
             reply = (players, stations)

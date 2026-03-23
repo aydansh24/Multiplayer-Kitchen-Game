@@ -31,6 +31,23 @@ bun_img = pygame.transform.scale(bun_img, (bun_img.get_width() * 3, bun_img.get_
 patty_raw_img = pygame.image.load("sprites/patty_raw.png").convert_alpha()
 patty_raw_img = pygame.transform.scale(patty_raw_img, (patty_raw_img.get_width() * 3, patty_raw_img.get_height() * 3))
 
+STATION_IMAGES = {
+    "counter":          pygame.transform.scale(pygame.image.load("sprites/counter.png").convert_alpha(), (96, 96)),
+    "cutting_station":  pygame.transform.scale(pygame.image.load("sprites/cutting_station.png").convert_alpha(), (96, 96)),
+    "lettuce_crate":    pygame.transform.scale(pygame.image.load("sprites/lettuce_crate.png").convert_alpha(), (96, 96)),
+    "meat_crate":       pygame.transform.scale(pygame.image.load("sprites/meat_crate.png").convert_alpha(), (96, 96)),
+    "plate_station":    pygame.transform.scale(pygame.image.load("sprites/plate_station.png").convert_alpha(), (96, 96)),
+    "stove":            pygame.transform.scale(pygame.image.load("sprites/stove.png").convert_alpha(), (96, 96)),
+    "tomato_crate":     pygame.transform.scale(pygame.image.load("sprites/tomato_crate.png").convert_alpha(), (96, 96)),
+    "trash":            pygame.transform.scale(pygame.image.load("sprites/trash.png").convert_alpha(), (96, 96)),
+}
+
+ingredient_images = {
+        "tomato": tomato_img,
+        "lettuce": lettuce_img,
+        "patty_raw": patty_raw_img,
+        }
+
 wall_bounds = [
     pygame.Rect(0, 0, width, 1),        # top wall
     pygame.Rect(0, height, width, 1),   # bottom wall
@@ -38,23 +55,14 @@ wall_bounds = [
     pygame.Rect(width, 0, 1, height),   # right wall
 ]
 
-def redrawWindow(win, players,   stations):
+def redrawWindow(win, players, stations):
     win.blit(kitchen_img, (0, 0))
 
     for station in stations:
-        station.draw(win)
-
-        if station.item:
-            pass
-
-    imgs = {
-        "tomato": tomato_img,
-        "lettuce": lettuce_img,
-        "patty_raw": patty_raw_img,
-    }
+        station.draw(win, STATION_IMAGES, ingredient_images)
 
     for player in players:
-        player.draw(win, player_img, imgs)
+        player.draw(win, player_img, ingredient_images)
 
         # Hand Debugging
         # hand = player.get_hand_rect()
@@ -73,6 +81,7 @@ def main():
     players = []
     stations = []
 
+    interact_pressed = False
     while run:
         clock.tick(60)
         collisions = wall_bounds + [s.rect for s in stations]
@@ -90,10 +99,11 @@ def main():
             p.move(collisions)
 
             if keys[pygame.K_c]:
-                hand_rect = p.get_hand_rect()
-                for s in stations:
-                    if hand_rect.colliderect(s.rect):
-                        s.interact(p)
+                if not interact_pressed:
+                    action = "interact"
+                    interact_pressed = True
+            else:
+                interact_pressed = False
 
             players, stations = n.send({
                 "player": p,

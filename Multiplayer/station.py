@@ -1,3 +1,4 @@
+# station.py
 import pygame
 from ingredient import Ingredient
 
@@ -17,32 +18,22 @@ class Station:
         if self.type in CRATE_ITEMS:
             if player.inventory is None:
                 player.inventory = Ingredient(0, 0, CRATE_ITEMS[self.type])
-
         elif self.type == "counter":
             if player.inventory and self.item is None:
                 self.item = player.inventory
                 player.inventory = None
-
             elif player.inventory is None and self.item:
                 player.inventory = self.item
                 self.item = None
 
-    def draw(self, win):
-        STATION_IMAGES = {
-            "counter":          pygame.image.load("sprites/counter.png").convert_alpha(),
-            "cutting_station":  pygame.image.load("sprites/cutting_station.png").convert_alpha(),
-            "lettuce_crate":    pygame.image.load("sprites/lettuce_crate.png").convert_alpha(),
-            "meat_crate":       pygame.image.load("sprites/meat_crate.png").convert_alpha(),
-            "plate_station":    pygame.image.load("sprites/plate_station.png").convert_alpha(),
-            "stove":            pygame.image.load("sprites/stove.png").convert_alpha(),
-            "tomato_crate":     pygame.image.load("sprites/tomato_crate.png").convert_alpha(),
-            "trash":            pygame.image.load("sprites/trash.png").convert_alpha(),
-        }
-
-        for key in STATION_IMAGES:
-            img = STATION_IMAGES[key]
-            STATION_IMAGES[key] = pygame.transform.scale(img, (img.get_width() * 6, img.get_height() * 6))
-
-        img = STATION_IMAGES.get(self.type)
+    def draw(self, win, images, ingredient_images):
+        img = images.get(self.type)
         if img:
             win.blit(img, (self.rect.x, self.rect.y))
+
+        if self.item:
+            item_img = ingredient_images.get(self.item.name)
+            if item_img:
+                x = self.rect.x + (self.rect.width - item_img.get_width()) // 2
+                y = self.rect.y + (self.rect.height - item_img.get_height()) // 2
+                win.blit(item_img, (x, y))
