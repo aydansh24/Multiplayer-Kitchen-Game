@@ -19,7 +19,7 @@ print("Waiting for connection... Server Started")
 
 
 players = [
-    Player(0, 0, (255, 0, 0)),
+    Player(0, 30, (255, 0, 0)),
     Player(200, 50, (0, 255, 0)),
     Player(50, 200, (0, 0, 255)),
     Player(200, 200, (255, 255, 0))
@@ -29,7 +29,9 @@ stations = [
     Station(96, 0, "tomato_crate"),
     Station(480, 480, "lettuce_crate"),
     Station(0, 576, "meat_crate"),
-    Station(288, 384, "counter")
+    Station(288, 384, "counter"),
+    Station(96, 384, "counter"),
+    Station(384, 288, "counter")
 ]
 
 
