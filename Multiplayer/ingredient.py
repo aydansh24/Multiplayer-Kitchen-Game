@@ -7,7 +7,7 @@ class Ingredient:
         self.width = 32
         self.height = 32
         self.name = name
-        self.state = "raw"
+        # self.state = "raw"
         self.held = False
 
     def rect(self):

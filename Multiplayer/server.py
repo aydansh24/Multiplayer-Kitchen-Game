@@ -7,7 +7,7 @@ from station import Station
 server = "0.0.0.0"
 port = 5555
 
-s = socket. socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
     s.bind((server, port))
@@ -19,16 +19,16 @@ print("Waiting for connection... Server Started")
 
 
 players = [
-    Player(0, 0, 60, 96, (255, 0, 0)),
-    Player(200, 50, 50, 50, (0, 255, 0)),
-    Player(50, 200, 50, 50, (0, 0, 255)),
-    Player(200, 200, 50, 50, (255, 255, 0))
+    Player(0, 0, (255, 0, 0)),
+    Player(200, 50, (0, 255, 0)),
+    Player(50, 200, (0, 0, 255)),
+    Player(200, 200, (255, 255, 0))
 ]
 
 stations = [
-    Station(100,100,64,64,"tomato_crate"),
-    Station(180,100,64,64,"lettuce_crate"),
-    Station(260,100,64,64,"counter")
+    Station(100, 100, "tomato_crate"),
+    Station(180, 100, "lettuce_crate"),
+    Station(260, 100, "counter")
 ]
 
 
@@ -42,13 +42,22 @@ def threaded_client(conn, player):
             if not data:
                 print("Disconnected")
                 break
-            else:
-                players[player] = data
-                reply = (players, stations)
 
+            player_obj = data["player"]
+            action = data["action"]
+
+            players[player] = player_obj
+
+            if action == "interact":
+                for s in stations:
+                    if player_obj.get_rect().colliderect(s.rect):
+                        s.interact(player_obj)
+
+            reply = (players, stations)
             conn.sendall(pickle.dumps(reply))
 
-        except:
+        except Exception as e:
+            print("Error:", e)
             break
 
     print("Lost connection")

@@ -1,11 +1,12 @@
 import pygame
 
 class Player:
-    def __init__(self, x, y, width, height, color):
+    def __init__(self, x, y, color):
         self.x = x
         self.y = y
-        self.width = width
-        self.height = height
+        self.width = 60
+        self.height = 96
+        self.hand = "down"
         self.color = color
         self.vel = 6
         self.inventory = None
@@ -13,11 +14,14 @@ class Player:
     def get_rect(self):
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
-    def draw(self, win, img):
-        win.blit(img, (self.x, self.y))
+    def draw(self, win, player_img, imgs):
+        win.blit(player_img, (self.x, self.y))
 
         if self.inventory:
-            pygame.draw.circle(win,(255,255,255),(self.x+25,self.y-10),8)
+            if self.inventory.name == "tomato":
+                win.blit(imgs["tomato"], (self.x + self.width // 2, self.y - 30))
+            elif self.inventory.name == "lettuce":
+                win.blit(imgs["lettuce"], (self.x + self.width // 2, self.y - 30))
 
     def move(self, collisions):
         keys = pygame.key.get_pressed()
@@ -49,3 +53,20 @@ class Player:
                     self.y = rect.top - self.height
                 elif dy < 0:
                     self.y = rect.bottom
+
+        if dx > 0:   self.hand = "right"
+        elif dx < 0: self.hand = "left"
+        elif dy > 0: self.hand = "down"
+        elif dy < 0: self.hand = "up"
+
+    def get_hand_rect(self):
+        size = 20           # size of the hand area
+        offset = 10         # distance in front of the player
+        if self.hand == "up":
+            return pygame.Rect(self.x + self.width // 2 - size // 2, self.y - offset - size, size, size)
+        elif self.hand == "down":
+            return pygame.Rect(self.x + self.width // 2 - size // 2, self.y + self.height + offset, size, size)
+        elif self.hand == "left":
+            return pygame.Rect(self.x - offset - size, self.y + self.height // 2 - size // 2, size, size)
+        elif self.hand == "right":
+            return pygame.Rect(self.x + self.width + offset, self.y + self.height // 2 - size // 2, size, size)
