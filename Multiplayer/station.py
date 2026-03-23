@@ -1,4 +1,3 @@
-# station.py
 import pygame
 from ingredient import Ingredient
 
