@@ -26,9 +26,10 @@ players = [
 ]
 
 stations = [
-    Station(100, 100, "tomato_crate"),
-    Station(180, 100, "lettuce_crate"),
-    Station(260, 100, "counter")
+    Station(96, 0, "tomato_crate"),
+    Station(480, 480, "lettuce_crate"),
+    Station(0, 576, "meat_crate"),
+    Station(288, 384, "counter")
 ]
 
 

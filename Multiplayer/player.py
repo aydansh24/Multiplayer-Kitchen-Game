@@ -18,10 +18,10 @@ class Player:
         win.blit(player_img, (self.x, self.y))
 
         if self.inventory:
-            if self.inventory.name == "tomato":
-                win.blit(imgs["tomato"], (self.x + self.width // 2, self.y - 30))
-            elif self.inventory.name == "lettuce":
-                win.blit(imgs["lettuce"], (self.x + self.width // 2, self.y - 30))
+            img = imgs.get(self.inventory.name)
+            if img:
+                win.blit(img, (self.x + self.width // 2, self.y - 30))
+
 
     def move(self, collisions):
         keys = pygame.key.get_pressed()

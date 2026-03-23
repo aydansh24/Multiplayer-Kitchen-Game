@@ -25,6 +25,12 @@ tomato_img = pygame.transform.scale(tomato_img,(tomato_img.get_width() * 3, toma
 lettuce_img = pygame.image.load("sprites/lettuce.png").convert_alpha()
 lettuce_img = pygame.transform.scale(lettuce_img, (lettuce_img.get_width() * 3, lettuce_img.get_height() * 3))
 
+bun_img = pygame.image.load("sprites/bun.png").convert_alpha()
+bun_img = pygame.transform.scale(bun_img, (bun_img.get_width() * 3, bun_img.get_height() * 3))
+
+patty_raw_img = pygame.image.load("sprites/patty_raw.png").convert_alpha()
+patty_raw_img = pygame.transform.scale(patty_raw_img, (patty_raw_img.get_width() * 3, patty_raw_img.get_height() * 3))
+
 wall_bounds = [
     pygame.Rect(0, 0, width, 1),        # top wall
     pygame.Rect(0, height, width, 1),   # bottom wall
@@ -44,6 +50,7 @@ def redrawWindow(win, players,   stations):
     imgs = {
         "tomato": tomato_img,
         "lettuce": lettuce_img,
+        "patty_raw": patty_raw_img,
     }
 
     for player in players:
@@ -94,8 +101,8 @@ def main():
             })
 
         else:
-            rand_x = r.randint(32, width - 32)
-            rand_y = r.randint(32, height - 32)
+            rand_x = r.randint(0, width - 96)
+            rand_y = r.randint(0, height - 96)
 
             players, stations = n.send({
                 "player": Player(rand_x, rand_y, (255, 0, 0)),

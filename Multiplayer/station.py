@@ -1,6 +1,12 @@
 import pygame
 from ingredient import Ingredient
 
+CRATE_ITEMS = {
+    "tomato_crate": "tomato",
+    "lettuce_crate": "lettuce",
+    "meat_crate": "patty_raw"
+}
+
 class Station:
     def __init__(self, x, y, type):
         self.rect = pygame.Rect(x, y, 96, 96)
@@ -8,13 +14,9 @@ class Station:
         self.item = None
 
     def interact(self, player):
-        if self.type == "tomato_crate":
+        if self.type in CRATE_ITEMS:
             if player.inventory is None:
-                player.inventory = Ingredient(0, 0, "tomato")
-
-        elif self.type == "lettuce_crate":
-            if player.inventory is None:
-                player.inventory = Ingredient(0, 0, "lettuce")
+                player.inventory = Ingredient(0, 0, CRATE_ITEMS[self.type])
 
         elif self.type == "counter":
             if player.inventory and self.item is None:
@@ -26,16 +28,21 @@ class Station:
                 self.item = None
 
     def draw(self, win):
-        img = None
+        STATION_IMAGES = {
+            "counter":          pygame.image.load("sprites/counter.png").convert_alpha(),
+            "cutting_station":  pygame.image.load("sprites/cutting_station.png").convert_alpha(),
+            "lettuce_crate":    pygame.image.load("sprites/lettuce_crate.png").convert_alpha(),
+            "meat_crate":       pygame.image.load("sprites/meat_crate.png").convert_alpha(),
+            "plate_station":    pygame.image.load("sprites/plate_station.png").convert_alpha(),
+            "stove":            pygame.image.load("sprites/stove.png").convert_alpha(),
+            "tomato_crate":     pygame.image.load("sprites/tomato_crate.png").convert_alpha(),
+            "trash":            pygame.image.load("sprites/trash.png").convert_alpha(),
+        }
 
-        if   self.type == "counter":         img = pygame.image.load("sprites/counter.png").convert()
-        elif self.type == "cutting_station": img = pygame.image.load("sprites/cutting_station.png").convert()
-        elif self.type == "lettuce_crate":   img = pygame.image.load("sprites/lettuce_crate.png").convert()
-        elif self.type == "meat_crate":      img = pygame.image.load("sprites/meat_crate.png").convert()
-        elif self.type == "plate_station":   img = pygame.image.load("sprites/plate_station.png").convert()
-        elif self.type == "stove":           img = pygame.image.load("sprites/stove.png").convert()
-        elif self.type == "tomato_crate":    img = pygame.image.load("sprites/tomato_crate.png").convert()
-        elif self.type == "trash":           img = pygame.image.load("sprites/trash.png").convert()
+        for key in STATION_IMAGES:
+            img = STATION_IMAGES[key]
+            STATION_IMAGES[key] = pygame.transform.scale(img, (img.get_width() * 6, img.get_height() * 6))
 
-        img = pygame.transform.scale(img, (img.get_width() * 6, img.get_height() * 6))
-        win.blit(img, (self.rect.x, self.rect.y))
+        img = STATION_IMAGES.get(self.type)
+        if img:
+            win.blit(img, (self.rect.x, self.rect.y))
