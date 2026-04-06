@@ -7,7 +7,7 @@ import random as r
 
 pygame.init()
 
-width = 768
+width = 960
 height = 672
 
 win = pygame.display.set_mode((width, height))
@@ -17,7 +17,6 @@ player_img = pygame.image.load("sprites/player.png").convert_alpha()
 player_img = pygame.transform.scale(player_img, (player_img.get_width() * 6, player_img.get_height() * 6))
 
 kitchen_img = pygame.image.load("sprites/kitchen_floor.png").convert()
-kitchen_img = pygame.transform.scale(kitchen_img, (width, height))
 
 tomato_img = pygame.image.load("sprites/tomato.png").convert_alpha()
 tomato_img = pygame.transform.scale(tomato_img,(tomato_img.get_width() * 3, tomato_img.get_height() * 3))
@@ -30,6 +29,12 @@ bun_img = pygame.transform.scale(bun_img, (bun_img.get_width() * 3, bun_img.get_
 
 patty_raw_img = pygame.image.load("sprites/patty_raw.png").convert_alpha()
 patty_raw_img = pygame.transform.scale(patty_raw_img, (patty_raw_img.get_width() * 3, patty_raw_img.get_height() * 3))
+
+patty_cooked_img = pygame.image.load("sprites/patty_cooked.png").convert_alpha()
+patty_cooked_img = pygame.transform.scale(patty_cooked_img, (patty_cooked_img.get_width() * 3, patty_cooked_img.get_height() * 3))
+
+plate_img = pygame.image.load("sprites/tomato_sliced.png").convert()
+plate_img = pygame.transform.scale(plate_img, (player_img.get_width() * 3, player_img.get_height() * 3))
 
 STATION_IMAGES = {
     "counter":          pygame.transform.scale(pygame.image.load("sprites/counter.png").convert_alpha(), (96, 96)),
@@ -46,6 +51,7 @@ ingredient_images = {
         "tomato": tomato_img,
         "lettuce": lettuce_img,
         "patty_raw": patty_raw_img,
+        "patty_cooked": patty_cooked_img,
         }
 
 wall_bounds = [

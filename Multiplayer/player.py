@@ -1,4 +1,5 @@
 import pygame
+from plate import Plate
 
 class Player:
     def __init__(self, x, y, color):
@@ -13,12 +14,24 @@ class Player:
 
     def draw(self, win, player_img, imgs):
         win.blit(player_img, (self.x, self.y))
-        print(f"Rect: {self.x}, {self.y}, {self.width}, {self.height}")
 
         if self.inventory:
             img = imgs.get(self.inventory.name)
             if img:
                 win.blit(img, (self.x + self.width // 2, self.y - 30))
+
+        if isinstance(self.inventory, Plate):
+            # Draw plate itself
+            plate_img = imgs.get("plate")
+            if plate_img:
+                win.blit(plate_img, (self.x + self.width // 2, self.y - 30))
+
+            # Draw all ingredients stacked on plate
+            for i, ingredient in enumerate(self.inventory.ingredients):
+                img = imgs.get(ingredient.name)
+                if img:
+                    offset_y = self.y - 30 - i * 10  # stack visually
+                    win.blit(img, (self.x + self.width // 2, offset_y))
 
 
     def move(self, collisions):
