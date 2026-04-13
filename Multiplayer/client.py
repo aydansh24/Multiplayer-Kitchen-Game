@@ -3,6 +3,7 @@ from network import Network
 from player import Player
 from station import Station
 from ingredient import Ingredient
+from order import Order
 import random as r
 
 pygame.init()
@@ -34,7 +35,7 @@ patty_cooked_img = pygame.image.load("sprites/patty_cooked.png").convert_alpha()
 patty_cooked_img = pygame.transform.scale(patty_cooked_img, (patty_cooked_img.get_width() * 3, patty_cooked_img.get_height() * 3))
 
 plate_img = pygame.image.load("sprites/tomato_sliced.png").convert()
-plate_img = pygame.transform.scale(plate_img, (player_img.get_width() * 3, player_img.get_height() * 3))
+plate_img = pygame.transform.scale(plate_img, (plate_img.get_width() * 3, plate_img.get_height() * 3))
 
 STATION_IMAGES = {
     "counter":          pygame.transform.scale(pygame.image.load("sprites/counter.png").convert_alpha(), (96, 96)),
@@ -52,6 +53,7 @@ ingredient_images = {
         "lettuce": lettuce_img,
         "patty_raw": patty_raw_img,
         "patty_cooked": patty_cooked_img,
+        "plate": plate_img
         }
 
 wall_bounds = [
@@ -61,7 +63,7 @@ wall_bounds = [
     pygame.Rect(width, 0, 1, height),   # right wall
 ]
 
-def redrawWindow(win, players, stations):
+def redrawWindow(win, players, stations, orders):
     win.blit(kitchen_img, (0, 0))
 
     for station in stations:
@@ -70,11 +72,33 @@ def redrawWindow(win, players, stations):
     for player in players:
         player.draw(win, player_img, ingredient_images)
 
-        # Hand Debugging
-        # hand = player.get_hand_rect()
-        # pygame.draw.rect(win, (0, 255, 0), hand, 2)
-
+    draw_orders(win, orders, ingredient_images)
     pygame.display.update()
+
+def draw_orders(win, orders, ingredient_images):
+    font = pygame.font.SysFont(None, 24)
+    card_width = 140
+    card_height = 80
+    padding = 10
+
+    for i, order in enumerate(orders):
+        x = padding + i * (card_width + padding)
+        y = 5
+
+        # Card background
+        pygame.draw.rect(win, (240, 220, 180), (x, y, card_width, card_height), border_radius=6)
+        pygame.draw.rect(win, (180, 140, 80), (x, y, card_width, card_height), 2, border_radius=6)
+
+        # Order name
+        label = font.render(order.name, True, (60, 30, 0))
+        win.blit(label, (x + 5, y + 5))
+
+        # Ingredient icons
+        for j, ing_name in enumerate(order.required):
+            img = ingredient_images.get(ing_name)
+            if img:
+                small = pygame.transform.scale(img, (32, 32))
+                win.blit(small, (x + 5 + j * 36, y + 30))
 
 
 def main():
@@ -111,7 +135,7 @@ def main():
             else:
                 interact_pressed = False
 
-            players, stations = n.send({
+            players, stations, orders = n.send({
                 "player": p,
                 "action": action
             })
@@ -120,11 +144,11 @@ def main():
             rand_x = r.randint(0, width - 96)
             rand_y = r.randint(0, height - 96)
 
-            players, stations = n.send({
+            players, stations, orders = n.send({
                 "player": Player(rand_x, rand_y, (255, 0, 0)),
                 "action": None
             })
 
-        redrawWindow(win, players, stations)
+        redrawWindow(win, players, stations, orders)
 
 main()

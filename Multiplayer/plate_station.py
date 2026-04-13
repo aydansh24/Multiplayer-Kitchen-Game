@@ -8,23 +8,25 @@ class PlateStation(Station):
         self.station_type = "plate_station"
 
     def interact(self, player):
+        # Player holds a plate → put it down
+        if isinstance(player.inventory, Plate) and self.item is None:
+            self.item = player.inventory
+            player.inventory = None
 
-        # If player is holding a plate, add item to it
-        if isinstance(player.inventory, Plate):
-            if self.item:
-                player.inventory.add_ingredient(self.item)
-                self.item = None
-
-        # If player is holding an ingredient, put it on a new plate
-        elif player.inventory:
-            self.item = Plate()
-            self.item.add_ingredient(player.inventory)
+        # Player has nothing and station has a plate → pick it up
+        elif player.inventory is None and self.item is not None:
             player.inventory = self.item
             self.item = None
 
-        # Pick up plate if nothing is on the station
-        elif self.item:
+        # Player has nothing and station is empty → give fresh plate
+        elif player.inventory is None and self.item is None:
             player.inventory = Plate()
+
+        # Player holds an ingredient → wrap in new plate
+        elif player.inventory is not None and self.item is None:
+            new_plate = Plate()
+            new_plate.add_ingredient(player.inventory)
+            player.inventory = new_plate
 
     def draw(self, win, images, ingredient_images):
         img = images.get(self.station_type)  # uses the key "plate"

@@ -1,4 +1,5 @@
 import pygame
+from plate import Plate
 
 class Station:
     def __init__(self, x, y, width=96, height=96):
@@ -15,8 +16,21 @@ class Station:
             win.blit(img, (self.rect.x, self.rect.y))
 
         if self.item:
-            item_img = ingredient_images.get(self.item.name)
-            if item_img:
-                x = self.rect.x + (self.rect.width - item_img.get_width()) // 2
-                y = self.rect.y + (self.rect.height - item_img.get_height()) // 2
-                win.blit(item_img, (x, y))
+            if isinstance(self.item, Plate):
+                plate_img = ingredient_images.get("plate")
+                if plate_img:
+                    x = self.rect.x + (self.rect.width - plate_img.get_width()) // 2
+                    y = self.rect.y + (self.rect.height - plate_img.get_height()) // 2
+                    win.blit(plate_img, (x, y))
+                for i, ingredient in enumerate(self.item.ingredients):
+                    ing_img = ingredient_images.get(ingredient.name)
+                    if ing_img:
+                        x = self.rect.x + (self.rect.width - ing_img.get_width()) // 2
+                        y = self.rect.y + (self.rect.height - ing_img.get_height()) // 2 - (i + 1) * 10
+                        win.blit(ing_img, (x, y))
+            else:
+                item_img = ingredient_images.get(self.item.name)
+                if item_img:
+                    x = self.rect.x + (self.rect.width - item_img.get_width()) // 2
+                    y = self.rect.y + (self.rect.height - item_img.get_height()) // 2
+                    win.blit(item_img, (x, y))

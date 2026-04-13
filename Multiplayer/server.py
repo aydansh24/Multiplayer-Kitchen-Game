@@ -2,16 +2,24 @@ import pickle
 import socket
 from _thread import *
 from player import Player
+from plate import Plate
 from crate import Crate
 from counter import Counter
 from trash import Trash
 from stove import Stove
 from plate_station import PlateStation
+from order import Order
 
 server = "0.0.0.0"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+MAX_ORDERS = 3
+ORDER_INTERVAL = 600 # new order every 10 seconds at 60 fps
+
+orders = [Order()]
+order_timer = 0
 
 try:
     s.bind((server, port))
@@ -53,6 +61,7 @@ stations = [
 
 
 def threaded_client(conn, player):
+    global orders, order_timer
     conn.send(pickle.dumps(player))
 
     while True:
@@ -74,11 +83,25 @@ def threaded_client(conn, player):
                     if hand_rect.colliderect(s.rect):
                         s.interact(player_obj)
 
+            if action == "submit":
+                if isinstance(player_obj.inventory, Plate):
+                    for order in orders:
+                        if order.matches(player_obj.inventory):
+                            orders.remove(order)
+                            player_obj.inventory = None
+                            break
+
+            # Spawn new orders
+            order_timer += 1
+            if order_timer >= ORDER_INTERVAL and len(orders) < MAX_ORDERS:
+                orders.append(Order())
+                order_timer = 0
+
             for s in stations:
                 if hasattr(s, "update"):
                     s.update()
 
-            reply = (players, stations)
+            reply = (players, stations, orders)
             conn.sendall(pickle.dumps(reply))
 
         except Exception as e:
