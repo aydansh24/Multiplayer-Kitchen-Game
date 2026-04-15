@@ -23,10 +23,10 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 def make_players():
     return [
-        Player(0, 30, (255, 0, 0)),
-        Player(200, 50, (0, 255, 0)),
-        Player(50, 200, (0, 0, 255)),
-        Player(200, 200, (255, 255, 0))
+        Player(0, 30, "red"),
+        Player(200, 50, "yellow"),
+        Player(50, 200, "green"),
+        Player(200, 200, "blue")
     ]
 
 

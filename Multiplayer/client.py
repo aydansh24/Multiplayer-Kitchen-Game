@@ -13,38 +13,13 @@ height = 672
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Multiplayer Cooking Game")
 
-player_img = pygame.image.load("sprites/player.png").convert_alpha()
-player_img = pygame.transform.scale(player_img, (player_img.get_width() * 6, player_img.get_height() * 6))
-
+player_img = pygame.image.load("sprites/player_red.png").convert_alpha()
 kitchen_img = pygame.image.load("sprites/kitchen_floor.png").convert()
-
-tomato_img = pygame.image.load("sprites/tomato.png").convert_alpha()
-tomato_img = pygame.transform.scale(tomato_img, (tomato_img.get_width() * 3, tomato_img.get_height() * 3))
-
-lettuce_img = pygame.image.load("sprites/lettuce.png").convert_alpha()
-lettuce_img = pygame.transform.scale(lettuce_img, (lettuce_img.get_width() * 3, lettuce_img.get_height() * 3))
-
-bun_img = pygame.image.load("sprites/bun.png").convert_alpha()
-bun_img = pygame.transform.scale(bun_img, (bun_img.get_width() * 3, bun_img.get_height() * 3))
-
-patty_raw_img = pygame.image.load("sprites/patty_raw.png").convert_alpha()
-patty_raw_img = pygame.transform.scale(patty_raw_img, (patty_raw_img.get_width() * 3, patty_raw_img.get_height() * 3))
-
-patty_cooked_img = pygame.image.load("sprites/patty_cooked.png").convert_alpha()
-patty_cooked_img = pygame.transform.scale(patty_cooked_img, (patty_cooked_img.get_width() * 3, patty_cooked_img.get_height() * 3))
-
-plate_img = pygame.image.load("sprites/tomato_sliced.png").convert()
-plate_img = pygame.transform.scale(plate_img, (plate_img.get_width() * 3, plate_img.get_height() * 3))
 
 player_yellow_lobby = pygame.image.load("sprites/player_yellow.png").convert_alpha()
 player_green_lobby = pygame.image.load("sprites/player_green.png").convert_alpha()
 player_red_lobby = pygame.image.load("sprites/player_red.png").convert_alpha()
 player_blue_lobby = pygame.image.load("sprites/player_blue.png").convert_alpha()
-
-player_yellow_lobby = pygame.transform.scale(player_yellow_lobby, (96, 96))
-player_green_lobby = pygame.transform.scale(player_green_lobby, (96, 96))
-player_red_lobby = pygame.transform.scale(player_red_lobby, (96, 96))
-player_blue_lobby = pygame.transform.scale(player_blue_lobby, (96, 96))
 
 LOBBY_PLAYER_IMAGES = {
     0: player_red_lobby,
@@ -54,22 +29,23 @@ LOBBY_PLAYER_IMAGES = {
 }
 
 STATION_IMAGES = {
-    "counter": pygame.transform.scale(pygame.image.load("sprites/counter.png").convert_alpha(), (96, 96)),
-    "cutting_station": pygame.transform.scale(pygame.image.load("sprites/cutting_station.png").convert_alpha(), (96, 96)),
-    "lettuce_crate": pygame.transform.scale(pygame.image.load("sprites/lettuce_crate.png").convert_alpha(), (96, 96)),
-    "meat_crate": pygame.transform.scale(pygame.image.load("sprites/meat_crate.png").convert_alpha(), (96, 96)),
-    "plate_station": pygame.transform.scale(pygame.image.load("sprites/plate_station.png").convert_alpha(), (96, 96)),
-    "stove": pygame.transform.scale(pygame.image.load("sprites/stove.png").convert_alpha(), (96, 96)),
-    "tomato_crate": pygame.transform.scale(pygame.image.load("sprites/tomato_crate.png").convert_alpha(), (96, 96)),
-    "trash": pygame.transform.scale(pygame.image.load("sprites/trash.png").convert_alpha(), (96, 96)),
+    "counter":          pygame.image.load("sprites/counter_front.png").convert_alpha(),
+    "cutting_station":  pygame.image.load("sprites/cutting_station.png").convert_alpha(),
+    "lettuce_crate":    pygame.image.load("sprites/lettuce_crate.png").convert_alpha(),
+    "meat_crate":       pygame.image.load("sprites/meat_crate.png").convert_alpha(),
+    "plate_station":    pygame.image.load("sprites/plate_station.png").convert_alpha(),
+    "stove":            pygame.image.load("sprites/stove.png").convert_alpha(),
+    "tomato_crate":     pygame.image.load("sprites/tomato_crate.png").convert_alpha(),
+    "trash":            pygame.image.load("sprites/trash.png").convert_alpha()
 }
 
 ingredient_images = {
-    "tomato": tomato_img,
-    "lettuce": lettuce_img,
-    "patty_raw": patty_raw_img,
-    "patty_cooked": patty_cooked_img,
-    "plate": plate_img
+    "bun":          pygame.image.load("sprites/bun.png").convert_alpha(),
+    "tomato":       pygame.image.load("sprites/tomato.png").convert_alpha(),
+    "lettuce":      pygame.image.load("sprites/lettuce.png").convert_alpha(),
+    "patty_raw":    pygame.image.load("sprites/patty_raw.png").convert_alpha(),
+    "patty_cooked": pygame.image.load("sprites/patty_cooked.png").convert_alpha(),
+    "plate":        pygame.image.load("sprites/plate.png").convert_alpha()
 }
 
 wall_bounds = [
@@ -100,6 +76,7 @@ def draw_orders(win, orders, ingredient_images):
             if img:
                 small = pygame.transform.scale(img, (32, 32))
                 win.blit(small, (x + 5 + j * 36, y + 30))
+
 
 def game_loop(n, player_id):
     clock = pygame.time.Clock()
