@@ -17,12 +17,20 @@ class Network:
         try:
             self.client.connect(self.addr)
             return pickle.loads(self.client.recv(2048))
-        except:
-            pass
+        except Exception as e:
+            print("Connection error:", e)
+            return None
 
     def send(self, data):
         try:
             self.client.send(pickle.dumps(data))
             return pickle.loads(self.client.recv(8192))
-        except socket.error as e:
-            print(e)
+        except Exception as e:
+            print("Send error:", e)
+            return None
+
+    def close(self):
+        try:
+            self.client.close()
+        except:
+            pass
