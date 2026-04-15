@@ -1,10 +1,9 @@
 import pygame
 from network import Network
 from player import Player
-from station import Station
-from ingredient import Ingredient
 from order import Order
 import random as r
+from ui import draw_menu, draw_lobby, redraw_window
 
 pygame.init()
 
@@ -20,7 +19,7 @@ player_img = pygame.transform.scale(player_img, (player_img.get_width() * 6, pla
 kitchen_img = pygame.image.load("sprites/kitchen_floor.png").convert()
 
 tomato_img = pygame.image.load("sprites/tomato.png").convert_alpha()
-tomato_img = pygame.transform.scale(tomato_img,(tomato_img.get_width() * 3, tomato_img.get_height() * 3))
+tomato_img = pygame.transform.scale(tomato_img, (tomato_img.get_width() * 3, tomato_img.get_height() * 3))
 
 lettuce_img = pygame.image.load("sprites/lettuce.png").convert_alpha()
 lettuce_img = pygame.transform.scale(lettuce_img, (lettuce_img.get_width() * 3, lettuce_img.get_height() * 3))
@@ -37,43 +36,48 @@ patty_cooked_img = pygame.transform.scale(patty_cooked_img, (patty_cooked_img.ge
 plate_img = pygame.image.load("sprites/tomato_sliced.png").convert()
 plate_img = pygame.transform.scale(plate_img, (plate_img.get_width() * 3, plate_img.get_height() * 3))
 
+player_yellow_lobby = pygame.image.load("sprites/player_yellow.png").convert_alpha()
+player_green_lobby = pygame.image.load("sprites/player_green.png").convert_alpha()
+player_red_lobby = pygame.image.load("sprites/player_red.png").convert_alpha()
+player_blue_lobby = pygame.image.load("sprites/player_blue.png").convert_alpha()
+
+player_yellow_lobby = pygame.transform.scale(player_yellow_lobby, (96, 96))
+player_green_lobby = pygame.transform.scale(player_green_lobby, (96, 96))
+player_red_lobby = pygame.transform.scale(player_red_lobby, (96, 96))
+player_blue_lobby = pygame.transform.scale(player_blue_lobby, (96, 96))
+
+LOBBY_PLAYER_IMAGES = {
+    0: player_red_lobby,
+    1: player_green_lobby,
+    2: player_blue_lobby,
+    3: player_yellow_lobby,
+}
+
 STATION_IMAGES = {
-    "counter":          pygame.transform.scale(pygame.image.load("sprites/counter.png").convert_alpha(), (96, 96)),
-    "cutting_station":  pygame.transform.scale(pygame.image.load("sprites/cutting_station.png").convert_alpha(), (96, 96)),
-    "lettuce_crate":    pygame.transform.scale(pygame.image.load("sprites/lettuce_crate.png").convert_alpha(), (96, 96)),
-    "meat_crate":       pygame.transform.scale(pygame.image.load("sprites/meat_crate.png").convert_alpha(), (96, 96)),
-    "plate_station":    pygame.transform.scale(pygame.image.load("sprites/plate_station.png").convert_alpha(), (96, 96)),
-    "stove":            pygame.transform.scale(pygame.image.load("sprites/stove.png").convert_alpha(), (96, 96)),
-    "tomato_crate":     pygame.transform.scale(pygame.image.load("sprites/tomato_crate.png").convert_alpha(), (96, 96)),
-    "trash":            pygame.transform.scale(pygame.image.load("sprites/trash.png").convert_alpha(), (96, 96)),
+    "counter": pygame.transform.scale(pygame.image.load("sprites/counter.png").convert_alpha(), (96, 96)),
+    "cutting_station": pygame.transform.scale(pygame.image.load("sprites/cutting_station.png").convert_alpha(), (96, 96)),
+    "lettuce_crate": pygame.transform.scale(pygame.image.load("sprites/lettuce_crate.png").convert_alpha(), (96, 96)),
+    "meat_crate": pygame.transform.scale(pygame.image.load("sprites/meat_crate.png").convert_alpha(), (96, 96)),
+    "plate_station": pygame.transform.scale(pygame.image.load("sprites/plate_station.png").convert_alpha(), (96, 96)),
+    "stove": pygame.transform.scale(pygame.image.load("sprites/stove.png").convert_alpha(), (96, 96)),
+    "tomato_crate": pygame.transform.scale(pygame.image.load("sprites/tomato_crate.png").convert_alpha(), (96, 96)),
+    "trash": pygame.transform.scale(pygame.image.load("sprites/trash.png").convert_alpha(), (96, 96)),
 }
 
 ingredient_images = {
-        "tomato": tomato_img,
-        "lettuce": lettuce_img,
-        "patty_raw": patty_raw_img,
-        "patty_cooked": patty_cooked_img,
-        "plate": plate_img
-        }
+    "tomato": tomato_img,
+    "lettuce": lettuce_img,
+    "patty_raw": patty_raw_img,
+    "patty_cooked": patty_cooked_img,
+    "plate": plate_img
+}
 
 wall_bounds = [
-    pygame.Rect(0, 0, width, 1),        # top wall
-    pygame.Rect(0, height, width, 1),   # bottom wall
-    pygame.Rect(0, 0, 1, height),       # left wall
-    pygame.Rect(width, 0, 1, height),   # right wall
+    pygame.Rect(0, 0, width, 1),
+    pygame.Rect(0, height, width, 1),
+    pygame.Rect(0, 0, 1, height),
+    pygame.Rect(width, 0, 1, height),
 ]
-
-def redrawWindow(win, players, stations, orders):
-    win.blit(kitchen_img, (0, 0))
-
-    for station in stations:
-        station.draw(win, STATION_IMAGES, ingredient_images)
-
-    for player in players:
-        player.draw(win, player_img, ingredient_images)
-
-    draw_orders(win, orders, ingredient_images)
-    pygame.display.update()
 
 def draw_orders(win, orders, ingredient_images):
     font = pygame.font.SysFont(None, 24)
@@ -85,41 +89,36 @@ def draw_orders(win, orders, ingredient_images):
         x = padding + i * (card_width + padding)
         y = 5
 
-        # Card background
         pygame.draw.rect(win, (240, 220, 180), (x, y, card_width, card_height), border_radius=6)
         pygame.draw.rect(win, (180, 140, 80), (x, y, card_width, card_height), 2, border_radius=6)
 
-        # Order name
         label = font.render(order.name, True, (60, 30, 0))
         win.blit(label, (x + 5, y + 5))
 
-        # Ingredient icons
         for j, ing_name in enumerate(order.required):
             img = ingredient_images.get(ing_name)
             if img:
                 small = pygame.transform.scale(img, (32, 32))
                 win.blit(small, (x + 5 + j * 36, y + 30))
 
-
-def main():
-    run = True
+def game_loop(n, player_id):
     clock = pygame.time.Clock()
-
-    n = Network()
-    player_id = n.get_id()
+    run = True
 
     players = []
     stations = []
-
+    orders = []
     interact_pressed = False
+
     while run:
         clock.tick(60)
         collisions = wall_bounds + [s.rect for s in stations]
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                n.close()
                 pygame.quit()
+                return "quit"
 
         keys = pygame.key.get_pressed()
         action = None
@@ -135,20 +134,112 @@ def main():
             else:
                 interact_pressed = False
 
-            players, stations, orders = n.send({
+            reply = n.send({
+                "mode": "game",
                 "player": p,
                 "action": action
             })
-
         else:
             rand_x = r.randint(0, width - 96)
             rand_y = r.randint(0, height - 96)
 
-            players, stations, orders = n.send({
+            reply = n.send({
+                "mode": "game",
                 "player": Player(rand_x, rand_y, (255, 0, 0)),
                 "action": None
             })
 
-        redrawWindow(win, players, stations, orders)
+        if reply is None:
+            return "menu"
 
-main()
+        if reply.get("type") == "lobby":
+            return "menu"
+
+        players = reply["players"]
+        stations = reply["stations"]
+        orders = reply["orders"]
+
+        redraw_window(win, kitchen_img, players, stations, orders, STATION_IMAGES, ingredient_images, player_img)
+
+
+def lobby_loop(n):
+    clock = pygame.time.Clock()
+    player_id = n.get_id()
+
+    while True:
+        clock.tick(10)
+
+        state = n.send({"mode": "lobby", "action": "poll"})
+        if state is None:
+            n.close()
+            return "menu"
+
+        if state.get("room_broken"):
+            n.close()
+            return "menu"
+
+        if state.get("game_started"):
+            result = game_loop(n, player_id)
+            n.close()
+            return result
+
+        button1, button2, is_host = draw_lobby(win, width, height, state, player_id, LOBBY_PLAYER_IMAGES)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                n.close()
+                pygame.quit()
+                return "quit"
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+
+                if is_host:
+                    if button1.collidepoint(mouse_pos):
+                        n.send({"mode": "lobby", "action": "start_game"})
+                    elif button2.collidepoint(mouse_pos):
+                        n.send({"mode": "lobby", "action": "break_room"})
+                else:
+                    if button1.collidepoint(mouse_pos):
+                        n.send({"mode": "lobby", "action": "ready"})
+                    elif button2.collidepoint(mouse_pos):
+                        n.close()
+                        return "menu"
+
+
+def menu():
+    clock = pygame.time.Clock()
+    show_popup = False
+
+    while True:
+        clock.tick(60)
+        connect_button, how_to_button, exit_button, close_rect = draw_menu(win, width, height, show_popup)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+
+                if show_popup:
+                    if close_rect and close_rect.collidepoint(mouse_pos):
+                        show_popup = False
+                else:
+                    if connect_button.collidepoint(mouse_pos):
+                        n = Network()
+                        if n.get_id() is not None:
+                            result = lobby_loop(n)
+                            if result == "quit":
+                                return
+                        else:
+                            print("Could not connect to server.")
+                    elif how_to_button.collidepoint(mouse_pos):
+                        show_popup = True
+                    elif exit_button.collidepoint(mouse_pos):
+                        pygame.quit()
+                        return
+
+
+menu()
