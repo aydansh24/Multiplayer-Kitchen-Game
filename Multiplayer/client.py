@@ -35,6 +35,7 @@ STATION_IMAGES = {
     "meat_crate":       pygame.image.load("sprites/meat_crate.png").convert_alpha(),
     "plate_station":    pygame.image.load("sprites/plate_station.png").convert_alpha(),
     "stove":            pygame.image.load("sprites/stove.png").convert_alpha(),
+    "submit_station": pygame.image.load("sprites/submit_station.png").convert_alpha(),
     "tomato_crate":     pygame.image.load("sprites/tomato_crate.png").convert_alpha(),
     "trash":            pygame.image.load("sprites/trash.png").convert_alpha()
 }

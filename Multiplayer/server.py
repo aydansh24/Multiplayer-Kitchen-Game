@@ -8,6 +8,7 @@ from counter import Counter
 from trash import Trash
 from stove import Stove
 from plate_station import PlateStation
+from submit_station import SubmitStation
 from order import Order
 
 server = "0.0.0.0"
@@ -40,7 +41,8 @@ def make_stations():
         Counter(384, 288),
         Trash(576, 576),
         Stove(672, 384),
-        PlateStation(864, 192)
+        PlateStation(864, 192),
+        SubmitStation(864, 480)
     ]
 
 
@@ -183,11 +185,20 @@ def threaded_client(conn, player_id):
 
                 players[player_id] = player_obj
 
+                # In the interact block in server.py, replace with:
                 if action == "interact":
                     hand_rect = player_obj.get_hand_rect()
                     for st in stations:
                         if hand_rect.colliderect(st.rect):
-                            st.interact(player_obj)
+                            if st.__class__.__name__ == "SubmitStation":
+                                if isinstance(player_obj.inventory, Plate) and not player_obj.inventory.is_empty():
+                                    for order in orders[:]:
+                                        if order.matches(player_obj.inventory):
+                                            orders.remove(order)
+                                            player_obj.inventory = None
+                                            break
+                            else:
+                                st.interact(player_obj)
 
                 if action == "submit":
                     if isinstance(player_obj.inventory, Plate):
