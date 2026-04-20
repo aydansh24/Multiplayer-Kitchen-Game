@@ -13,13 +13,13 @@ height = 672
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Multiplayer Cooking Game")
 
-player_img = pygame.image.load("sprites/player_red.png").convert_alpha()
+# player_img = pygame.image.load("sprites/player_red.png").convert_alpha()
 kitchen_img = pygame.image.load("sprites/kitchen_floor.png").convert()
 
-player_yellow_lobby = pygame.image.load("sprites/player_yellow.png").convert_alpha()
-player_green_lobby = pygame.image.load("sprites/player_green.png").convert_alpha()
-player_red_lobby = pygame.image.load("sprites/player_red.png").convert_alpha()
-player_blue_lobby = pygame.image.load("sprites/player_blue.png").convert_alpha()
+player_yellow_lobby = pygame.image.load("sprites/players/player_yellow.png").convert_alpha()
+player_green_lobby = pygame.image.load("sprites/players/player_green.png").convert_alpha()
+player_red_lobby = pygame.image.load("sprites/players/player_red.png").convert_alpha()
+player_blue_lobby = pygame.image.load("sprites/players/player_blue.png").convert_alpha()
 
 LOBBY_PLAYER_IMAGES = {
     0: player_red_lobby,
@@ -35,7 +35,7 @@ STATION_IMAGES = {
     "meat_crate":       pygame.image.load("sprites/meat_crate.png").convert_alpha(),
     "plate_station":    pygame.image.load("sprites/plate_station.png").convert_alpha(),
     "stove":            pygame.image.load("sprites/stove.png").convert_alpha(),
-    "submit_station": pygame.image.load("sprites/submit_station.png").convert_alpha(),
+    "submit_station":   pygame.image.load("sprites/submit_station.png").convert_alpha(),
     "tomato_crate":     pygame.image.load("sprites/tomato_crate.png").convert_alpha(),
     "trash":            pygame.image.load("sprites/trash.png").convert_alpha()
 }
@@ -123,21 +123,19 @@ def game_loop(n, player_id):
 
             reply = n.send({
                 "mode": "game",
-                "player": Player(rand_x, rand_y, (255, 0, 0)),
+                "player": Player(rand_x, rand_y, "green"),
                 "action": None
             })
 
-        if reply is None:
-            return "menu"
+        if reply is None:   return "menu"
 
-        if reply.get("type") == "lobby":
-            return "menu"
+        if reply.get("type") == "lobby":    return "menu"
 
         players = reply["players"]
         stations = reply["stations"]
         orders = reply["orders"]
 
-        redraw_window(win, kitchen_img, players, stations, orders, STATION_IMAGES, ingredient_images, player_img)
+        redraw_window(win, kitchen_img, players, stations, orders, STATION_IMAGES, ingredient_images)
 
 
 def lobby_loop(n):
