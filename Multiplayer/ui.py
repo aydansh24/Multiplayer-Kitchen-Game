@@ -32,17 +32,43 @@ def draw_orders(win, orders, ingredient_images):
                 win.blit(small, (x + 5 + j * 36, y + 30))
 
 
-def redraw_window(win, kitchen_img, players, stations, orders, station_images, ingredient_images, player_img):
+def redraw_window(win, kitchen_img, players, stations, orders, score, station_images, ingredient_images, player_img):
     win.blit(kitchen_img, (0, 0))
 
     for station in stations:
         station.draw(win, station_images, ingredient_images)
 
     for player in players:
-        player.draw(win, player_img, ingredient_images)
+        player_img_to_use = player_img
+        if   player.color == "red":     player_img_to_use = pygame.image.load("sprites/players/player_red.png").convert_alpha()
+        elif player.color == "yellow":  player_img_to_use = pygame.image.load("sprites/players/player_yellow.png").convert_alpha()
+        elif player.color == "green":   player_img_to_use = pygame.image.load("sprites/players/player_green.png").convert_alpha()
+        elif player.color == "blue":    player_img_to_use = pygame.image.load("sprites/players/player_blue.png").convert_alpha()
+        player.draw(win, player_img_to_use, ingredient_images)
 
     draw_orders(win, orders, ingredient_images)
+    draw_score(win, score)
     pygame.display.update()
+
+
+def draw_score(win, score):
+    font = pygame.font.SysFont("arial", 28, bold=True)
+    small_font = pygame.font.SysFont("arial", 20)
+
+    label = small_font.render("EARNINGS", True, (80, 50, 10))
+    amount = font.render(f"${score}", True, (40, 140, 40))
+
+    padding = 12
+    card_width = max(label.get_width(), amount.get_width()) + padding * 2
+    card_height = label.get_height() + amount.get_height() + padding * 2 + 4
+    x = 960 - card_width - 10
+    y = 5
+
+    pygame.draw.rect(win, (240, 220, 180), (x, y, card_width, card_height), border_radius=6)
+    pygame.draw.rect(win, (180, 140, 80), (x, y, card_width, card_height), 2, border_radius=6)
+
+    win.blit(label, (x + padding, y + padding))
+    win.blit(amount, (x + padding, y + padding + label.get_height() + 4))
 
 
 def draw_menu(win, width, height, show_popup):

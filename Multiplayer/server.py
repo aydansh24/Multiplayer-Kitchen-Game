@@ -13,10 +13,12 @@ from order import Order
 
 server = "0.0.0.0"
 port = 5555
+
 MAX_PLAYERS = 4
 MIN_PLAYERS_TO_START = 2
 MAX_ORDERS = 3
 ORDER_INTERVAL = 600  # 10 seconds at 60 fps
+score = 0
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -25,8 +27,8 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 def make_players():
     return [
         Player(0, 30, "red"),
-        Player(200, 50, "yellow"),
-        Player(50, 200, "green"),
+        Player(200, 50, "green"),
+        Player(50, 200, "yellow"),
         Player(200, 200, "blue")
     ]
 
@@ -47,11 +49,12 @@ def make_stations():
 
 
 def reset_world():
-    global players, stations, orders, order_timer
+    global players, stations, orders, order_timer, score
     players = make_players()
     stations = make_stations()
     orders = [Order()]
     order_timer = 0
+    score = 0
 
 
 players = []
@@ -129,7 +132,7 @@ print("Waiting for connection... Server Started")
 
 
 def threaded_client(conn, player_id):
-    global host_id, game_started, room_broken, order_timer, players, stations, orders
+    global host_id, game_started, room_broken, order_timer, players, stations, orders, score
 
     if host_id is None:
         host_id = player_id
@@ -196,6 +199,7 @@ def threaded_client(conn, player_id):
                                         if order.matches(player_obj.inventory):
                                             orders.remove(order)
                                             player_obj.inventory = None
+                                            score += 100
                                             break
                             else:
                                 st.interact(player_obj)
@@ -221,7 +225,8 @@ def threaded_client(conn, player_id):
                     "type": "game",
                     "players": players,
                     "stations": stations,
-                    "orders": orders
+                    "orders": orders,
+                    "score": score,
                 }
                 conn.sendall(pickle.dumps(reply))
 

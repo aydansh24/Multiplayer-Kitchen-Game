@@ -13,13 +13,16 @@ height = 672
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Multiplayer Cooking Game")
 
-# player_img = pygame.image.load("sprites/player_red.png").convert_alpha()
+player_img = pygame.image.load("sprites/players/player_red.png").convert_alpha()
 kitchen_img = pygame.image.load("sprites/kitchen_floor.png").convert()
 
 player_yellow_lobby = pygame.image.load("sprites/players/player_yellow.png").convert_alpha()
 player_green_lobby = pygame.image.load("sprites/players/player_green.png").convert_alpha()
 player_red_lobby = pygame.image.load("sprites/players/player_red.png").convert_alpha()
 player_blue_lobby = pygame.image.load("sprites/players/player_blue.png").convert_alpha()
+
+PLAYER_COLORS = {0: "red", 1: "green", 2: "yellow", 3: "blue"}
+POSSIBLE_SPAWN = [(0, 0), ()]
 
 LOBBY_PLAYER_IMAGES = {
     0: player_red_lobby,
@@ -86,6 +89,7 @@ def game_loop(n, player_id):
     players = []
     stations = []
     orders = []
+    score = 0
     interact_pressed = False
 
     while run:
@@ -123,7 +127,7 @@ def game_loop(n, player_id):
 
             reply = n.send({
                 "mode": "game",
-                "player": Player(rand_x, rand_y, "green"),
+                "player": Player(rand_x, rand_y, PLAYER_COLORS[player_id]),
                 "action": None
             })
 
@@ -134,8 +138,9 @@ def game_loop(n, player_id):
         players = reply["players"]
         stations = reply["stations"]
         orders = reply["orders"]
+        score = reply.get("score", 0)
 
-        redraw_window(win, kitchen_img, players, stations, orders, STATION_IMAGES, ingredient_images)
+        redraw_window(win, kitchen_img, players, stations, orders, score, STATION_IMAGES, ingredient_images, player_img)
 
 
 def lobby_loop(n):
