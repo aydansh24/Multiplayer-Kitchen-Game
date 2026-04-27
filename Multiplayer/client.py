@@ -6,6 +6,7 @@ import random as r
 from ui import draw_menu, draw_lobby, redraw_window
 
 pygame.init()
+pygame.mixer.init()
 
 width = 960
 height = 672
@@ -13,22 +14,43 @@ height = 672
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Multiplayer Cooking Game")
 
-player_img = pygame.image.load("sprites/players/player_red.png").convert_alpha()
-kitchen_img = pygame.image.load("sprites/kitchen_floor.png").convert()
-
-player_yellow_lobby = pygame.image.load("sprites/players/player_yellow.png").convert_alpha()
-player_green_lobby = pygame.image.load("sprites/players/player_green.png").convert_alpha()
-player_red_lobby = pygame.image.load("sprites/players/player_red.png").convert_alpha()
-player_blue_lobby = pygame.image.load("sprites/players/player_blue.png").convert_alpha()
+background = pygame.image.load("sprites/kitchen_floor.png").convert()
 
 PLAYER_COLORS = {0: "red", 1: "green", 2: "yellow", 3: "blue"}
-POSSIBLE_SPAWN = [(0, 0), ()]
+POSSIBLE_SPAWNS = [(1, 192), (1, 384), (288, 192), (480, 192), (288, 480), (768, 384), (864, 384)]
 
 LOBBY_PLAYER_IMAGES = {
-    0: player_red_lobby,
-    1: player_green_lobby,
-    2: player_blue_lobby,
-    3: player_yellow_lobby,
+    0: pygame.image.load("sprites/players/player_red.png").convert_alpha(),
+    1: pygame.image.load("sprites/players/player_green.png").convert_alpha(),
+    2: pygame.image.load("sprites/players/player_blue.png").convert_alpha(),
+    3: pygame.image.load("sprites/players/player_yellow.png").convert_alpha(),
+}
+
+PLAYER_IMAGES = {
+    "red":    {
+        "up":    pygame.image.load("sprites/players/player_red_back.png").convert_alpha(),
+        "down":  pygame.image.load("sprites/players/player_red_front.png").convert_alpha(),
+        "left":  pygame.image.load("sprites/players/player_red_left.png").convert_alpha(),
+        "right": pygame.image.load("sprites/players/player_red_right.png").convert_alpha(),
+    },
+    "green":  {
+        "up":    pygame.image.load("sprites/players/player_green_back.png").convert_alpha(),
+        "down":  pygame.image.load("sprites/players/player_green_front.png").convert_alpha(),
+        "left":  pygame.image.load("sprites/players/player_green_left.png").convert_alpha(),
+        "right": pygame.image.load("sprites/players/player_green_right.png").convert_alpha(),
+    },
+    "yellow": {
+        "up":    pygame.image.load("sprites/players/player_yellow_back.png").convert_alpha(),
+        "down":  pygame.image.load("sprites/players/player_yellow_front.png").convert_alpha(),
+        "left":  pygame.image.load("sprites/players/player_yellow_left.png").convert_alpha(),
+        "right": pygame.image.load("sprites/players/player_yellow_back.png").convert_alpha(),
+    },
+    "blue":   {
+        "up":    pygame.image.load("sprites/players/player_blue_back.png").convert_alpha(),
+        "down":  pygame.image.load("sprites/players/player_blue_front.png").convert_alpha(),
+        "left":  pygame.image.load("sprites/players/player_blue_left.png").convert_alpha(),
+        "right": pygame.image.load("sprites/players/player_blue_right.png").convert_alpha(),
+    },
 }
 
 STATION_IMAGES = {
@@ -43,7 +65,7 @@ STATION_IMAGES = {
     "trash":            pygame.image.load("sprites/trash.png").convert_alpha()
 }
 
-ingredient_images = {
+INGREDIENT_IMAGES = {
     "bun":          pygame.image.load("sprites/bun.png").convert_alpha(),
     "tomato":       pygame.image.load("sprites/tomato.png").convert_alpha(),
     "lettuce":      pygame.image.load("sprites/lettuce.png").convert_alpha(),
@@ -52,12 +74,35 @@ ingredient_images = {
     "plate":        pygame.image.load("sprites/plate.png").convert_alpha()
 }
 
+def load_sound(path, volume=1.0):
+    sound = pygame.mixer.Sound(path)
+    sound.set_volume(volume)
+    return sound
+
+SOUNDS = {
+    "frying":   load_sound("sounds/frying.mp3", 0.5),
+}
+
+CHANNELS = {
+    "frying":   pygame.mixer.Channel(0),
+}
+
 wall_bounds = [
-    pygame.Rect(0, 0, width, 1),
-    pygame.Rect(0, height, width, 1),
-    pygame.Rect(0, 0, 1, height),
-    pygame.Rect(width, 0, 1, height),
+    pygame.Rect(0, 95, width, 1),       # Top Wall
+    pygame.Rect(0, height, width, 1),   # Bottom Wall
+    pygame.Rect(-1, 0, 1, height),       # Left Wall
+    pygame.Rect(width, 0, 1, height),   # Right Wall
 ]
+
+def play_sound(name, loop=False):
+    channel = CHANNELS.get(name)
+    sound = SOUNDS.get(name)
+    if channel and sound and not channel.get_busy():
+        channel.play(sound, loops=-1 if loop else 0)
+
+def stop_sound(name):
+    channel = CHANNELS.get(name)
+    if channel: channel.stop()
 
 def draw_orders(win, orders, ingredient_images):
     font = pygame.font.SysFont(None, 24)
@@ -91,10 +136,14 @@ def game_loop(n, player_id):
     orders = []
     score = 0
     interact_pressed = False
+    frying_timer = 0
+    was_cooking = False
 
     while run:
         clock.tick(60)
-        collisions = wall_bounds + [s.rect for s in stations]
+        player_collisions = [s.rect for s in stations]
+        station_collisions = [pygame.Rect(p.x, p.y, p.width, p.height) for i, p in enumerate(players) if i!= player_id]
+        collisions = wall_bounds + player_collisions + station_collisions
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -122,12 +171,11 @@ def game_loop(n, player_id):
                 "action": action
             })
         else:
-            rand_x = r.randint(0, width - 96)
-            rand_y = r.randint(0, height - 96)
+            rand_spawn = r.choice(POSSIBLE_SPAWNS)
 
             reply = n.send({
                 "mode": "game",
-                "player": Player(rand_x, rand_y, PLAYER_COLORS[player_id]),
+                "player": Player(rand_spawn[0], rand_spawn[1], PLAYER_COLORS[player_id]),
                 "action": None
             })
 
@@ -140,7 +188,22 @@ def game_loop(n, player_id):
         orders = reply["orders"]
         score = reply.get("score", 0)
 
-        redraw_window(win, kitchen_img, players, stations, orders, score, STATION_IMAGES, ingredient_images, player_img)
+        currently_cooking = any(hasattr(st, "cooking") and st.cooking for st in stations)
+
+        if currently_cooking and not was_cooking:
+            play_sound("frying")
+            frying_timer = 0
+        elif currently_cooking:
+            frying_timer += 1
+            if frying_timer >= 180:
+                stop_sound("frying")
+        else:
+            stop_sound("frying")
+            frying_timer = 0
+
+        was_cooking = currently_cooking
+
+        redraw_window(win, background, players, stations, orders, score, STATION_IMAGES, INGREDIENT_IMAGES, PLAYER_IMAGES)
 
 
 def lobby_loop(n):

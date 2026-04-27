@@ -16,7 +16,7 @@ port = 5555
 
 MAX_PLAYERS = 4
 MIN_PLAYERS_TO_START = 2
-MAX_ORDERS = 3
+MAX_ORDERS = 5
 ORDER_INTERVAL = 600  # 10 seconds at 60 fps
 score = 0
 
@@ -26,26 +26,21 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 def make_players():
     return [
-        Player(0, 30, "red"),
-        Player(200, 50, "green"),
-        Player(50, 200, "yellow"),
-        Player(200, 200, "blue")
+        Player(1000, 1000, "red"),
+        Player(1000, 1000, "green"),
+        Player(1000, 1000, "yellow"),
+        Player(1000, 1000, "blue")
     ]
 
 
 def make_stations():
-    return [
-        Crate(96, 0, "tomato_crate"),
-        Crate(480, 480, "lettuce_crate"),
-        Crate(0, 576, "meat_crate"),
-        Counter(288, 384),
-        Counter(96, 384),
-        Counter(384, 288),
-        Trash(576, 576),
-        Stove(672, 384),
-        PlateStation(864, 192),
-        SubmitStation(864, 480)
-    ]
+    return [Counter(192, 96), Counter(288, 96), Counter(384, 96), Crate(480, 96, "tomato_crate"), Counter(576, 96), Counter(672, 96), SubmitStation(768, 96), Counter(864, 96),
+            Counter(672, 192),
+            Counter(96, 288), Counter(288, 288), Counter(384, 288), Trash(480, 288),
+            Counter(96, 384), PlateStation(288, 384), Counter(384, 384), Counter(672, 384),
+            Counter(384, 480), Counter(576, 480), Counter(672, 480), Crate(864, 480, "meat_crate"),
+            Counter(0, 576), Crate(96, 576, "lettuce_crate"), Stove(192, 576), Counter(576, 576), Counter(672, 576), Counter(768, 576), Counter(864, 576),
+            ]
 
 
 def reset_world():
@@ -198,8 +193,8 @@ def threaded_client(conn, player_id):
                                     for order in orders[:]:
                                         if order.matches(player_obj.inventory):
                                             orders.remove(order)
+                                            score += len(player_obj.inventory.ingredients) * 100
                                             player_obj.inventory = None
-                                            score += 100
                                             break
                             else:
                                 st.interact(player_obj)

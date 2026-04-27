@@ -32,19 +32,16 @@ def draw_orders(win, orders, ingredient_images):
                 win.blit(small, (x + 5 + j * 36, y + 30))
 
 
-def redraw_window(win, kitchen_img, players, stations, orders, score, station_images, ingredient_images, player_img):
+def redraw_window(win, kitchen_img, players, stations, orders, score, station_images, ingredient_images, player_images):
     win.blit(kitchen_img, (0, 0))
 
     for station in stations:
         station.draw(win, station_images, ingredient_images)
 
     for player in players:
-        player_img_to_use = player_img
-        if   player.color == "red":     player_img_to_use = pygame.image.load("sprites/players/player_red.png").convert_alpha()
-        elif player.color == "yellow":  player_img_to_use = pygame.image.load("sprites/players/player_yellow.png").convert_alpha()
-        elif player.color == "green":   player_img_to_use = pygame.image.load("sprites/players/player_green.png").convert_alpha()
-        elif player.color == "blue":    player_img_to_use = pygame.image.load("sprites/players/player_blue.png").convert_alpha()
-        player.draw(win, player_img_to_use, ingredient_images)
+        player_img = player_images.get(player.color, {}).get(player.hand)
+        if player_img:
+            player.draw(win, player_img, ingredient_images)
 
     draw_orders(win, orders, ingredient_images)
     draw_score(win, score)

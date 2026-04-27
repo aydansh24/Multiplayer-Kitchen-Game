@@ -13,8 +13,6 @@ class Player:
         self.inventory = None
 
     def draw(self, win, player_img, imgs):
-        win.blit(player_img, (self.x, self.y))
-
         if isinstance(self.inventory, Plate):
             plate_img = imgs.get("plate")
             if plate_img:
@@ -26,8 +24,9 @@ class Player:
         elif self.inventory:
             img = imgs.get(self.inventory.name)
             if img:
-                win.blit(img, (self.x + self.width // 2, self.y - 30))
+                win.blit(img, (self.x + ((self.width // 2) - img.get_width()), self.y - 30))
 
+        win.blit(player_img, (self.x, self.y))
 
     def move(self, collisions):
         keys = pygame.key.get_pressed()
