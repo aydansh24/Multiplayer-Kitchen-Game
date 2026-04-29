@@ -45,8 +45,7 @@ def redraw_window(win, kitchen_img, players, stations, orders, score, station_im
 
     draw_orders(win, orders, ingredient_images)
     draw_score(win, score)
-    pygame.display.update()
-
+    draw_timer(win)
 
 def draw_score(win, score):
     font = pygame.font.SysFont("arial", 28, bold=True)
@@ -67,6 +66,22 @@ def draw_score(win, score):
     win.blit(label, (x + padding, y + padding))
     win.blit(amount, (x + padding, y + padding + label.get_height() + 4))
 
+def draw_timer(win):
+
+    small_font = pygame.font.SysFont("arial", 20)
+
+    label = small_font.render("TIMER", True, (80, 50, 10))
+
+    padding = 12
+    card_width = label.get_width() + padding * 8
+    card_height = label.get_height() + padding * 6 + 4
+    x = 960 - card_width
+    y = 672 - card_height - 30
+    
+    pygame.draw.rect(win, (240, 220, 180), (x, y, card_width, card_height), border_radius=6)
+    pygame.draw.rect(win, (180, 140, 80), (x, y, card_width, card_height), 2, border_radius=6)
+
+    win.blit(label, (x + padding, y + padding))
 
 def draw_menu(win, width, height, show_popup):
     title_font = pygame.font.SysFont("arial", 56, bold=True)
@@ -251,3 +266,31 @@ def draw_lobby(win, width, height, state, player_id, lobby_player_images):
         draw_button(win, leave_button, "Leave Room", button_font, red, white)
         pygame.display.update()
         return ready_button, leave_button, False
+
+def draw_endScreen(win, width, score):
+    title_font = pygame.font.SysFont("arial", 48, bold=True)
+    button_font = pygame.font.SysFont("arial", 28, bold=True)
+
+    brown = (120, 72, 32)
+    cream = (236, 229, 216)
+    red = (210, 60, 60)
+    white = (255, 255, 255)
+    green = (80, 170, 100)
+
+
+    win.fill(cream)
+
+    title = title_font.render("Time's Up!", True, brown)
+    win.blit(title, title.get_rect(center=(width // 2, 100)))
+
+    total_earned_label = title_font.render("Total Earned:", True, brown)
+    win.blit(total_earned_label, total_earned_label.get_rect(center=(width//2, 250)))
+
+    score_label = title_font.render(f"${score}", True, green)
+    win.blit(score_label, score_label.get_rect(center=(width // 2, 310)))
+
+    exit_button = pygame.Rect(width // 2 - 150, 480, 300, 65)
+
+    draw_button(win, exit_button, "Exit Game", button_font, red, white)
+    pygame.display.update()
+    return exit_button

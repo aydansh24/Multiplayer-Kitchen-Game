@@ -1,9 +1,10 @@
 import pygame
+import time
 from network import Network
 from player import Player
 from order import Order
 import random as r
-from ui import draw_menu, draw_lobby, redraw_window
+from ui import draw_menu, draw_lobby, redraw_window, draw_endScreen
 
 pygame.init()
 pygame.mixer.init()
@@ -130,6 +131,7 @@ def draw_orders(win, orders, ingredient_images):
 def game_loop(n, player_id):
     clock = pygame.time.Clock()
     run = True
+    end_condition = False
 
     players = []
     stations = []
@@ -138,6 +140,13 @@ def game_loop(n, player_id):
     interact_pressed = False
     frying_timer = 0
     was_cooking = False
+
+    timer_font = pygame.font.SysFont(None, 55)
+    timer_sec = 2
+    timer_text = timer_font.render("01:00", True, "#AC763F")
+    timer_rect = timer_text.get_rect(center = (890,600))
+    timer = pygame.USEREVENT + 1                                                
+    pygame.time.set_timer(timer, 1000)      # sets timer with USEREVENT and delay in milliseconds
 
     while run:
         clock.tick(60)
@@ -150,6 +159,16 @@ def game_loop(n, player_id):
                 n.close()
                 pygame.quit()
                 return "quit"
+            if event.type == timer:    # checks for timer event
+                if timer_sec > 0:
+                    timer_sec -= 1
+                    timer_text = timer_font.render("00:%02d" % timer_sec, True, "#AC763F")
+                    if timer_sec < 6: #put 11
+                        timer_text = timer_font.render("00:%02d" % timer_sec, True, "#FF4D4D")
+                else:
+                    pygame.time.set_timer(timer, 0)    # turns off timer event
+                    time.sleep(1)
+                    end_condition = True
 
         keys = pygame.key.get_pressed()
         action = None
@@ -202,9 +221,30 @@ def game_loop(n, player_id):
             frying_timer = 0
 
         was_cooking = currently_cooking
+        if end_condition:
+            endScreen(score)
 
-        redraw_window(win, background, players, stations, orders, score, STATION_IMAGES, INGREDIENT_IMAGES, PLAYER_IMAGES)
+        else:
+            redraw_window(win, background, players, stations, orders, score, STATION_IMAGES, INGREDIENT_IMAGES, PLAYER_IMAGES)
+            win.blit(timer_text, timer_rect)
+        pygame.display.update()
 
+def endScreen(score):
+    clock = pygame.time.Clock()
+
+    while True:
+        clock.tick(60)
+        exit_button = draw_endScreen(win, width, score)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos            
+                if exit_button.collidepoint(mouse_pos):
+                    pygame.quit()
+                    return
 
 def lobby_loop(n):
     clock = pygame.time.Clock()
