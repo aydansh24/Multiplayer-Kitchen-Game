@@ -4,7 +4,8 @@ from station import Station
 CRATE_ITEMS = {
     "tomato_crate": "tomato",
     "lettuce_crate": "lettuce",
-    "meat_crate": "patty_raw"
+    "meat_crate": "patty_raw",
+    "bun_crate": "bun"
 }
 
 class Crate(Station):
