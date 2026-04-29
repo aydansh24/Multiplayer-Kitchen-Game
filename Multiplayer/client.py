@@ -56,6 +56,7 @@ PLAYER_IMAGES = {
 
 STATION_IMAGES = {
     "counter":          pygame.image.load("sprites/counter_front.png").convert_alpha(),
+    "bun_crate":        pygame.image.load("sprites/bun_crate.png").convert_alpha(),
     "cutting_station":  pygame.image.load("sprites/cutting_station.png").convert_alpha(),
     "lettuce_crate":    pygame.image.load("sprites/lettuce_crate.png").convert_alpha(),
     "meat_crate":       pygame.image.load("sprites/meat_crate.png").convert_alpha(),
@@ -69,7 +70,9 @@ STATION_IMAGES = {
 INGREDIENT_IMAGES = {
     "bun":          pygame.image.load("sprites/bun.png").convert_alpha(),
     "tomato":       pygame.image.load("sprites/tomato.png").convert_alpha(),
+    "tomato_sliced": pygame.image.load("sprites/tomato_sliced.png").convert_alpha(),
     "lettuce":      pygame.image.load("sprites/lettuce.png").convert_alpha(),
+    "lettuce_sliced": pygame.image.load("sprites/lettuce_sliced.png").convert_alpha(),
     "patty_raw":    pygame.image.load("sprites/patty_raw.png").convert_alpha(),
     "patty_cooked": pygame.image.load("sprites/patty_cooked.png").convert_alpha(),
     "plate":        pygame.image.load("sprites/plate.png").convert_alpha()
