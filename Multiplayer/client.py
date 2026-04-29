@@ -142,7 +142,7 @@ def game_loop(n, player_id):
     was_cooking = False
 
     timer_font = pygame.font.SysFont(None, 55)
-    timer_sec = 2
+    timer_sec = 60
     timer_text = timer_font.render("01:00", True, "#AC763F")
     timer_rect = timer_text.get_rect(center = (890,600))
     timer = pygame.USEREVENT + 1                                                
