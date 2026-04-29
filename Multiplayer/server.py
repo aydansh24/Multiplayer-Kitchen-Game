@@ -7,6 +7,7 @@ from crate import Crate
 from counter import Counter
 from trash import Trash
 from stove import Stove
+from cutting_station import CuttingStation
 from plate_station import PlateStation
 from submit_station import SubmitStation
 from order import Order
@@ -34,7 +35,7 @@ def make_players():
 
 
 def make_stations():
-    return [Counter(192, 96), Counter(288, 96), Counter(384, 96), Crate(480, 96, "tomato_crate"), Counter(576, 96), Counter(672, 96), SubmitStation(768, 96), Counter(864, 96),
+        return [Crate(0, 96, "bun_crate"), Counter(192, 96), Counter(288, 96), Counter(384, 96), Crate(480, 96, "tomato_crate"), CuttingStation(576, 96), Counter(672, 96), SubmitStation(768, 96), Counter(864, 96),
             Counter(672, 192),
             Counter(96, 288), Counter(288, 288), Counter(384, 288), Trash(480, 288),
             Counter(96, 384), PlateStation(288, 384), Counter(384, 384), Counter(672, 384),
