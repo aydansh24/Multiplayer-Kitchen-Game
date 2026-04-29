@@ -1,10 +1,10 @@
 import random
 
 ORDERS = [
-    {"name": "Plain Burger", "ingredients": ["patty_cooked"]},
-    {"name": "Lettuce Burger", "ingredients": ["patty_cooked", "lettuce"]},
-    {"name": "Tomato Burger", "ingredients": ["patty_cooked", "tomato"]},
-    {"name": "Full Burger", "ingredients": ["patty_cooked", "lettuce", "tomato"]},
+    {"name": "Plain Burger", "ingredients": ["bun", "patty_cooked"]},
+    {"name": "Lettuce Burger", "ingredients": ["bun", "patty_cooked", "lettuce_sliced"]},
+    {"name": "Tomato Burger", "ingredients": ["bun", "patty_cooked", "tomato_sliced"]},
+    {"name": "Full Burger", "ingredients": ["bun", "patty_cooked", "lettuce_sliced", "tomato_sliced"]},
 ]
 
 class Order:
