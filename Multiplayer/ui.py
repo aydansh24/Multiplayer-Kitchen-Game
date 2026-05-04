@@ -45,7 +45,7 @@ def redraw_window(win, kitchen_img, players, stations, orders, score, station_im
 
     draw_orders(win, orders, ingredient_images)
     draw_score(win, score)
-    pygame.display.update()
+    draw_timer(win)
 
 
 def draw_score(win, score):

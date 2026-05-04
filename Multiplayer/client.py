@@ -165,7 +165,7 @@ def game_loop(n, player_id):
 
     timer_font = pygame.font.SysFont(None, 55)
     timer_sec = 90
-    timer_text = timer_font.render("01:00", True, "#AC763F")
+    timer_text = timer_font.render("01:30", True, "#AC763F")
     timer_rect = timer_text.get_rect(center=(890, 600))
     timer = pygame.USEREVENT + 1
     pygame.time.set_timer(timer, 1000)
