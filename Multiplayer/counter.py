@@ -44,12 +44,12 @@ class Counter(Station):
             if isinstance(self.item, Plate):
                 # Center the plate on the station
                 plate_img = ingredient_images.get("plate")
-                px = cx - (plate_img.get_width() // 2 if plate_img else 0)
-                py = cy - (plate_img.get_height() // 2 if plate_img else 0) - 20
+                px = cx - (plate_img.get_width() // 2 if plate_img else 0) + 20
+                py = cy - (plate_img.get_height() // 2 if plate_img else 0)
                 self.item.draw(win, ingredient_images, px, py)
             else:
                 item_img = ingredient_images.get(self.item.name)
                 if item_img:
                     x = cx - item_img.get_width() // 2
-                    y = cy - item_img.get_height() // 2 - 20
+                    y = cy - item_img.get_height() // 2
                     win.blit(item_img, (x, y))
