@@ -35,12 +35,14 @@ def make_players():
 
 
 def make_stations():
-    return [Crate(0, 96, "bun_crate"), Counter(192, 96), Counter(288, 96), Counter(384, 96), Crate(480, 96, "tomato_crate"), Counter(576, 96), Counter(672, 96), SubmitStation(768, 96), Counter(864, 96),
-            Counter(672, 192),
-            Counter(96, 288), Counter(288, 288), Counter(384, 288), Trash(480, 288), CuttingStation(864, 288),
-            Counter(96, 384), PlateStation(288, 384), Counter(384, 384), Counter(672, 384),
-            Counter(384, 480), Counter(576, 480), Counter(672, 480), Crate(864, 480, "meat_crate"),
-            Counter(0, 576), Crate(96, 576, "lettuce_crate"), Stove(192, 576), Counter(576, 576), Counter(672, 576), Counter(768, 576), Counter(864, 576),
+    return [Crate(0, 96, "bun_crate"),          Counter(192, 96, "counter"),      Counter(288, 96, "counter"),      Counter(384, 96, "counter"),
+            Crate(480, 96, "tomato_crate"),     Counter(576, 96, "counter"),      Counter(672, 96, "counter_top"),  SubmitStation(768, 96),
+            Counter(864, 96, "counter"),        Counter(672, 192, "counter"),     Counter(96, 288, "counter_top"),  Counter(288, 288, "counter_top"),
+            Counter(384, 288, "counter_top"),   Trash(480, 288),                  CuttingStation(864, 288),         Counter(96, 384, "counter"),
+            PlateStation(288, 384),             Counter(384, 384, "counter_top"), Counter(672, 384, "counter_top"), Counter(384, 480, "counter"),
+            Counter(576, 480, "counter_top"),   Counter(672, 480, "counter_top"), Crate(864, 480, "meat_crate"),    Counter(0, 576, "counter"),
+            Crate(96, 576, "lettuce_crate"),    Stove(192, 576),                  Counter(576, 576, "counter"),     Counter(672, 576, "counter"),
+            Counter(768, 576, "counter"),       Counter(864, 576, "counter"),
             ]
 
 

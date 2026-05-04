@@ -22,11 +22,10 @@ class PlateStation(Station):
                 player.inventory = new_plate
 
     def draw(self, win, images, ingredient_images):
-        img = images.get(self.station_type)  # uses the key "plate"
+        img = images.get(self.station_type)
         if img:
             win.blit(img, (self.rect.x, self.rect.y))
 
-        # If station holds a plate, draw it
         if self.item:
             item_img = ingredient_images.get("plate")
             if item_img:

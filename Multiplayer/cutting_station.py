@@ -7,7 +7,7 @@ CUT_RESULTS = {
 
 class CuttingStation(Counter):
     def __init__(self, x, y):
-        super().__init__(x, y)
+        super().__init__(x, y, None)
         self.station_type = "cutting_station"
 
     def cut(self):

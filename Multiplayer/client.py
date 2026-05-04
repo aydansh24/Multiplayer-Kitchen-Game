@@ -56,6 +56,7 @@ PLAYER_IMAGES = {
 
 STATION_IMAGES = {
     "counter":          pygame.image.load("sprites/stations/counter_front.png").convert_alpha(),
+    "counter_top":      pygame.image.load("sprites/stations/counter_top.png").convert_alpha(),
     "bun_crate":        pygame.image.load("sprites/stations/bun_crate.png").convert_alpha(),
     "cutting_station":  pygame.image.load("sprites/stations/cutting_station.png").convert_alpha(),
     "lettuce_crate":    pygame.image.load("sprites/stations/lettuce_crate.png").convert_alpha(),
