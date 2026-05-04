@@ -1,18 +1,21 @@
-# Multiplayer
-Multiplayer Kitchen game
+## Multiplayer Kitchen game
+This is a multiplayer cooking simulator game in Python, where 2-4 players work together to complete various orders and accumulate the highest score
 
-How to Run:
-1. Download all files in the "Multiplayer" folder into a folder on your laptop
-2. Within the created folder, copy the folder address
-3. Open Command Prompt
-4. Type "cd " then paste the folder address. Press "Enter"
+## Installation Requirements
+For this game, you and other players will need to have pygame installed. Use the following command in the terminal to install pygame
+```bash
+pip install pygame
+```
 
-Host:\
-5. Type "python server.py" Then press "Enter"\
-6. The command prompt should print out "Waiting for connection... Server Started"\
-7. To play, repeat steps 3 and 4, then follow the instructiosn below
+## How to Play
+1. All players must be connected to the same network
+2. All players must download all files in the "Multiplayer" folder
+3. In "network.py", all players must change "self.server" to one person's IP Address. This person will be the designated host of this game.
 
-Player:\
-8. Ensure that someone is already running the server file\
-9. Type "python client.py" Press "Enter"\
-10. A window should pop up, and you can begin playing!
+# Host
+1. To find the host's IP Address, in your terminal, type
+```bash
+ipconfig
+```
+2. Underneath "Wireless LAN Adapter Wifi", copy and paste the IPv4 Address into "self.server" in "network.py"
+3. All players should have the same address in their "self.server"
