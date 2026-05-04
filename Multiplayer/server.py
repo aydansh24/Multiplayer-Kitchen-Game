@@ -16,7 +16,7 @@ server = "0.0.0.0"
 port = 5555
 
 MAX_PLAYERS = 4
-MIN_PLAYERS_TO_START = 2
+MIN_PLAYERS_TO_START = 1
 MAX_ORDERS = 5
 ORDER_INTERVAL = 600  # 10 seconds at 60 fps
 SCORE = 0
