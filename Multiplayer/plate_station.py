@@ -1,6 +1,6 @@
 from station import Station
-from player import Player
 from plate import Plate
+from counter import is_platable
 
 class PlateStation(Station):
     def __init__(self, x, y):
@@ -8,20 +8,18 @@ class PlateStation(Station):
         self.station_type = "plate_station"
 
     def interact(self, player):
-        # Player has nothing and station has a plate, pick it up
         if player.inventory is None and self.item is not None:
             player.inventory = self.item
             self.item = None
 
-        # Player has nothing and station is empty, give fresh plate
         elif player.inventory is None and self.item is None:
             player.inventory = Plate()
 
-        # Player holds an ingredient (not a plate), wrap in new plate
         elif player.inventory is not None and not isinstance(player.inventory, Plate) and self.item is None:
-            new_plate = Plate()
-            new_plate.add_ingredient(player.inventory)
-            player.inventory = new_plate
+            if is_platable(player.inventory):
+                new_plate = Plate()
+                new_plate.add_ingredient(player.inventory)
+                player.inventory = new_plate
 
     def draw(self, win, images, ingredient_images):
         img = images.get(self.station_type)  # uses the key "plate"

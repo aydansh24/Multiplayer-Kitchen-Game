@@ -19,7 +19,7 @@ MAX_PLAYERS = 4
 MIN_PLAYERS_TO_START = 2
 MAX_ORDERS = 5
 ORDER_INTERVAL = 600  # 10 seconds at 60 fps
-score = 0
+SCORE = 0
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -35,9 +35,9 @@ def make_players():
 
 
 def make_stations():
-        return [Crate(0, 96, "bun_crate"), Counter(192, 96), Counter(288, 96), Counter(384, 96), Crate(480, 96, "tomato_crate"), CuttingStation(576, 96), Counter(672, 96), SubmitStation(768, 96), Counter(864, 96),
+    return [Crate(0, 96, "bun_crate"), Counter(192, 96), Counter(288, 96), Counter(384, 96), Crate(480, 96, "tomato_crate"), Counter(576, 96), Counter(672, 96), SubmitStation(768, 96), Counter(864, 96),
             Counter(672, 192),
-            Counter(96, 288), Counter(288, 288), Counter(384, 288), Trash(480, 288),
+            Counter(96, 288), Counter(288, 288), Counter(384, 288), Trash(480, 288), CuttingStation(864, 288),
             Counter(96, 384), PlateStation(288, 384), Counter(384, 384), Counter(672, 384),
             Counter(384, 480), Counter(576, 480), Counter(672, 480), Crate(864, 480, "meat_crate"),
             Counter(0, 576), Crate(96, 576, "lettuce_crate"), Stove(192, 576), Counter(576, 576), Counter(672, 576), Counter(768, 576), Counter(864, 576),
@@ -45,12 +45,12 @@ def make_stations():
 
 
 def reset_world():
-    global players, stations, orders, order_timer, score
+    global players, stations, orders, order_timer, SCORE
     players = make_players()
     stations = make_stations()
     orders = [Order()]
     order_timer = 0
-    score = 0
+    SCORE = 0
 
 
 players = []
@@ -128,7 +128,7 @@ print("Waiting for connection... Server Started")
 
 
 def threaded_client(conn, player_id):
-    global host_id, game_started, room_broken, order_timer, players, stations, orders, score
+    global host_id, game_started, room_broken, order_timer, players, stations, orders, SCORE
 
     if host_id is None:
         host_id = player_id
@@ -139,7 +139,7 @@ def threaded_client(conn, player_id):
         conn.send(pickle.dumps(player_id))
 
         while True:
-            data = conn.recv(8192)
+            data = conn.recv(65536)
             if not data:
                 break
 
@@ -184,7 +184,7 @@ def threaded_client(conn, player_id):
 
                 players[player_id] = player_obj
 
-                # In the interact block in server.py, replace with:
+                submitted = False
                 if action == "interact":
                     hand_rect = player_obj.get_hand_rect()
                     for st in stations:
@@ -194,19 +194,18 @@ def threaded_client(conn, player_id):
                                     for order in orders[:]:
                                         if order.matches(player_obj.inventory):
                                             orders.remove(order)
-                                            score += len(player_obj.inventory.ingredients) * 100
+                                            SCORE += len(player_obj.inventory.ingredients) * 100
                                             player_obj.inventory = None
+                                            submitted = True
                                             break
                             else:
                                 st.interact(player_obj)
 
-                if action == "submit":
-                    if isinstance(player_obj.inventory, Plate):
-                        for order in orders[:]:
-                            if order.matches(player_obj.inventory):
-                                orders.remove(order)
-                                player_obj.inventory = None
-                                break
+                if action == "cut":
+                    hand_rect = player_obj.get_hand_rect()
+                    for st in stations:
+                        if hand_rect.colliderect(st.rect) and st.__class__.__name__ == "CuttingStation":
+                            st.cut()
 
                 order_timer += 1
                 if order_timer >= ORDER_INTERVAL and len(orders) < MAX_ORDERS:
@@ -222,7 +221,8 @@ def threaded_client(conn, player_id):
                     "players": players,
                     "stations": stations,
                     "orders": orders,
-                    "score": score,
+                    "score": SCORE,
+                    "submitted": submitted,
                 }
                 conn.sendall(pickle.dumps(reply))
 

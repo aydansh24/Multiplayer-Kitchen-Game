@@ -14,19 +14,15 @@ class Player:
 
     def draw(self, win, player_img, imgs):
         if isinstance(self.inventory, Plate):
-            plate_img = imgs.get("plate")
-            if plate_img:
-                win.blit(plate_img, (self.x + self.width // 2, self.y - 30))
-            for i, ingredient in enumerate(self.inventory.ingredients):
-                img = imgs.get(ingredient.name)
-                if img:
-                    win.blit(img, (self.x + self.width // 2, self.y - 30 - (i + 1) * 10))
+            self.inventory.draw(win, imgs, self.x + self.width // 2, self.y - 30)
         elif self.inventory:
             img = imgs.get(self.inventory.name)
             if img:
-                win.blit(img, (self.x + ((self.width // 2) - img.get_width()), self.y - 30))
+                x = self.x + self.width // 2 - img.get_width() // 2
+                win.blit(img, (x, self.y - 50))
 
         win.blit(player_img, (self.x, self.y))
+
 
     def move(self, collisions):
         keys = pygame.key.get_pressed()
@@ -63,6 +59,7 @@ class Player:
         elif dx < 0: self.hand = "left"
         elif dy > 0: self.hand = "down"
         elif dy < 0: self.hand = "up"
+
 
     def get_hand_rect(self):
         size = 20           # size of the hand area

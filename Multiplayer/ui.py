@@ -25,7 +25,7 @@ def draw_orders(win, orders, ingredient_images):
         label = font.render(order.name, True, (60, 30, 0))
         win.blit(label, (x + 5, y + 5))
 
-        for j, ing_name in enumerate(order.required):
+        for j, ing_name in enumerate(order.display):
             img = ingredient_images.get(ing_name)
             if img:
                 small = pygame.transform.scale(img, (32, 32))
@@ -45,7 +45,8 @@ def redraw_window(win, kitchen_img, players, stations, orders, score, station_im
 
     draw_orders(win, orders, ingredient_images)
     draw_score(win, score)
-    draw_timer(win)
+    pygame.display.update()
+
 
 def draw_score(win, score):
     font = pygame.font.SysFont("arial", 28, bold=True)
@@ -66,8 +67,8 @@ def draw_score(win, score):
     win.blit(label, (x + padding, y + padding))
     win.blit(amount, (x + padding, y + padding + label.get_height() + 4))
 
-def draw_timer(win):
 
+def draw_timer(win):
     small_font = pygame.font.SysFont("arial", 20)
 
     label = small_font.render("TIMER", True, (80, 50, 10))
@@ -77,11 +78,12 @@ def draw_timer(win):
     card_height = label.get_height() + padding * 6 + 4
     x = 960 - card_width
     y = 672 - card_height - 30
-    
+
     pygame.draw.rect(win, (240, 220, 180), (x, y, card_width, card_height), border_radius=6)
     pygame.draw.rect(win, (180, 140, 80), (x, y, card_width, card_height), 2, border_radius=6)
 
     win.blit(label, (x + padding, y + padding))
+
 
 def draw_menu(win, width, height, show_popup):
     title_font = pygame.font.SysFont("arial", 56, bold=True)
@@ -138,11 +140,12 @@ def draw_menu(win, width, height, show_popup):
         rules_font = pygame.font.SysFont("arial", 22)
         rules = [
             "1. Use arrow keys to move.",
-            "2. Press C to interact with counters and stations.",
-            "3. Pick up ingredients and prepare the food.",
-            "4. Put ingredients onto plates in the right order.",
-            "5. Work with your teammates to finish customer orders.",
-            "6. Host starts the game after everyone is ready."
+            "2. Press C to pick up items at counters and stations.",
+            "3. Press X to cut ingredients at the cutting station.",
+            "4. Put ingredients onto plates to create dishes.",
+            "5. Submit dishes to earn money.",
+            "6. Work with your teammates to accumulate the highest score.",
+            "7. Have fun!"
         ]
 
         for i, line in enumerate(rules):
@@ -266,6 +269,7 @@ def draw_lobby(win, width, height, state, player_id, lobby_player_images):
         draw_button(win, leave_button, "Leave Room", button_font, red, white)
         pygame.display.update()
         return ready_button, leave_button, False
+
 
 def draw_endScreen(win, width, score):
     title_font = pygame.font.SysFont("arial", 48, bold=True)
