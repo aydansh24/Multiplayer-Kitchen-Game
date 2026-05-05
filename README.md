@@ -70,7 +70,7 @@ Complete as many burger orders as possible within 1 minute 30 seconds. Each ingr
 
 - The first player to connect becomes the **Host**
 - Other players click **Ready** when they are ready
-- The Host can click **Start Game** once all players are ready (minimum 1 players)
+- The Host can click **Start Game** once all players are ready (minimum 1 player)
 - **How to Play** will recap basic gameplay instructions
 
 ---
