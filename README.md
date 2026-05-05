@@ -13,6 +13,8 @@ This is a multiplayer cooking game built with Python and Pygame, inspired by Ove
 
 ## How to Run
 
+Before running, set the `server` IP in `network.py` to the host machine's local IP address. On Windows, find it by running `ipconfig` in the command prompt and looking for the WiFi adapter IP (ex: `192.168.1.x`)
+
 **Start the server** (one machine only):
 ```
 python server.py
@@ -22,8 +24,6 @@ python server.py
 ```
 python client.py
 ```
-
-Before running, set the `server` IP in `network.py` to the host machine's local IP address. On Windows, find it by running `ipconfig` in the command prompt and looking for the WiFi adapter IP (e.g. `192.168.1.x`).
 
 ---
 
@@ -70,7 +70,8 @@ Complete as many burger orders as possible within 1 minute 30 seconds. Each ingr
 
 - The first player to connect becomes the **Host**
 - Other players click **Ready** when they are ready
-- The Host can click **Start Game** once all players are ready (minimum 2 players by default)
+- The Host can click **Start Game** once all players are ready (minimum 1 players)
+- **How to Play** will recap basic gameplay instructions
 
 ---
 
@@ -104,3 +105,4 @@ Complete as many burger orders as possible within 1 minute 30 seconds. Each ingr
 - Only ingredients that are properly prepared (cooked patty, sliced vegetables, bun) can be placed on a plate
 - Raw or uncut ingredients cannot be plated
 - New orders spawn every 10 seconds, up to a maximum of 5 at once
+- Incorrect orders can not be submitted
